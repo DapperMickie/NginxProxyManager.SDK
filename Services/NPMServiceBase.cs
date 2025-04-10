@@ -1,7 +1,7 @@
 using System.Text;
 using Newtonsoft.Json;
 
-namespace NgninxProxyManager.SDK.Services
+namespace NginxProxyManager.SDK.Services
 {
     public abstract class NPMServiceBase
     {

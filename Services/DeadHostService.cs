@@ -4,10 +4,10 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using NgninxProxyManager.SDK.Models.DeadHosts;
-using NgninxProxyManager.SDK.Services.Interfaces;
+using NginxProxyManager.SDK.Models.DeadHosts;
+using NginxProxyManager.SDK.Services.Interfaces;
 
-namespace NgninxProxyManager.SDK.Services
+namespace NginxProxyManager.SDK.Services
 {
     public class DeadHostService : IDeadHostService
     {

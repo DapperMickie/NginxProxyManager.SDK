@@ -1,8 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
-using NgninxProxyManager.SDK.Models.Streams;
+using NginxProxyManager.SDK.Models.Streams;
 
-namespace NgninxProxyManager.SDK.Services.Interfaces
+namespace NginxProxyManager.SDK.Services.Interfaces
 {
     public interface IStreamService
     {

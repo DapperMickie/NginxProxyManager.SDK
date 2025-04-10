@@ -1,8 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
-using NgninxProxyManager.SDK.Models.ServerErrors;
+using NginxProxyManager.SDK.Models.ServerErrors;
 
-namespace NgninxProxyManager.SDK.Services.Interfaces
+namespace NginxProxyManager.SDK.Services.Interfaces
 {
     public interface IServerErrorService
     {

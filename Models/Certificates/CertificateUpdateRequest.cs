@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace NgninxProxyManager.SDK.Models.Certificates
+namespace NginxProxyManager.SDK.Models.Certificates
 {
     public class CertificateUpdateRequest
     {

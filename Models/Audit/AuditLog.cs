@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json.Serialization;
 
-namespace NgninxProxyManager.SDK.Models.Audit
+namespace NginxProxyManager.SDK.Models.Audit
 {
     public class AuditLog
     {

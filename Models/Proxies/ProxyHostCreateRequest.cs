@@ -1,6 +1,6 @@
-using NgninxProxyManager.SDK.Models.Certificates;
+using NginxProxyManager.SDK.Models.Certificates;
 
-namespace NgninxProxyManager.SDK.Models.Proxies
+namespace NginxProxyManager.SDK.Models.Proxies
 {
     public class ProxyHostCreateRequest
     {

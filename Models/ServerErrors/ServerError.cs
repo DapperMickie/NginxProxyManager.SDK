@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json.Serialization;
 
-namespace NgninxProxyManager.SDK.Models.ServerErrors
+namespace NginxProxyManager.SDK.Models.ServerErrors
 {
     public class ServerError
     {

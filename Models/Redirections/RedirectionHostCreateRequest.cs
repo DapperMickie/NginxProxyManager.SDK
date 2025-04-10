@@ -1,4 +1,4 @@
-namespace NgninxProxyManager.SDK.Models.Redirections
+namespace NginxProxyManager.SDK.Models.Redirections
 {
     public class RedirectionHostCreateRequest
     {

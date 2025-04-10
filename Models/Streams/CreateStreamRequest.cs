@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace NgninxProxyManager.SDK.Models.Streams
+namespace NginxProxyManager.SDK.Models.Streams
 {
     public class CreateStreamRequest
     {

@@ -4,10 +4,10 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using NgninxProxyManager.SDK.Models.Certificates;
-using NgninxProxyManager.SDK.Services.Interfaces;
+using NginxProxyManager.SDK.Models.Certificates;
+using NginxProxyManager.SDK.Services.Interfaces;
 
-namespace NgninxProxyManager.SDK.Services
+namespace NginxProxyManager.SDK.Services
 {
     public class CertificateService : ICertificateService
     {

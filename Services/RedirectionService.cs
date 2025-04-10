@@ -1,9 +1,10 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using NgninxProxyManager.SDK.Models.Redirections;
-using NgninxProxyManager.SDK.Services.Interfaces;
-namespace NgninxProxyManager.SDK.Services
+using NginxProxyManager.SDK.Models.Redirections;
+using NginxProxyManager.SDK.Services.Interfaces;
+
+namespace NginxProxyManager.SDK.Services
 {
     public class RedirectionService : NPMServiceBase, IRedirectionService
     {

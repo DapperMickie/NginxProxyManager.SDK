@@ -1,6 +1,6 @@
 using System;
 
-namespace NgninxProxyManager.SDK.Configuration
+namespace NginxProxyManager.SDK.Configuration
 {
     public class NPMConfiguration
     {

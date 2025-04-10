@@ -1,8 +1,8 @@
 using System;
-using NgninxProxyManager.SDK.Models.AccessLists;
-using NgninxProxyManager.SDK.Models.Certificates;
+using NginxProxyManager.SDK.Models.AccessLists;
+using NginxProxyManager.SDK.Models.Certificates;
 
-namespace NgninxProxyManager.SDK.Models.Redirections
+namespace NginxProxyManager.SDK.Models.Redirections
 {
     public class RedirectionHost
     {

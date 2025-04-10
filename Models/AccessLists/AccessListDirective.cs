@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace NgninxProxyManager.SDK.Models.AccessLists
+namespace NginxProxyManager.SDK.Models.AccessLists
 {
     public enum AccessListDirective
     {

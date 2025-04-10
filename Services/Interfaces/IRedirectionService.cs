@@ -1,6 +1,6 @@
-﻿using NgninxProxyManager.SDK.Models.Redirections;
+﻿using NginxProxyManager.SDK.Models.Redirections;
 
-namespace NgninxProxyManager.SDK.Services.Interfaces
+namespace NginxProxyManager.SDK.Services.Interfaces
 {
     public interface IRedirectionService
     {

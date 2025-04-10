@@ -1,10 +1,10 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using NgninxProxyManager.SDK.Models.Streams;
-using NgninxProxyManager.SDK.Services.Interfaces;
+using NginxProxyManager.SDK.Models.Streams;
+using NginxProxyManager.SDK.Services.Interfaces;
 
-namespace NgninxProxyManager.SDK.Services
+namespace NginxProxyManager.SDK.Services
 {
     public class StreamService : NPMServiceBase, IStreamService
     {

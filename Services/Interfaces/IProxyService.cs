@@ -1,6 +1,6 @@
-﻿using NgninxProxyManager.SDK.Models.Proxies;
+﻿using NginxProxyManager.SDK.Models.Proxies;
 
-namespace NgninxProxyManager.SDK.Services.Interfaces
+namespace NginxProxyManager.SDK.Services.Interfaces
 {
     public interface IProxyService
     {

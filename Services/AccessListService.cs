@@ -1,14 +1,14 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using NgninxProxyManager.SDK.Models.AccessLists;
-using NgninxProxyManager.SDK.Services.Interfaces;
+using NginxProxyManager.SDK.Models.AccessLists;
+using NginxProxyManager.SDK.Services.Interfaces;
 
-namespace NgninxProxyManager.SDK.Services
+namespace NginxProxyManager.SDK.Services
 {
     public class AccessListService : NPMServiceBase, IAccessListService
     {
-        public AccessListService(HttpClient httpClient, string baseUrl) 
+        public AccessListService(HttpClient httpClient, string baseUrl)
             : base(httpClient, baseUrl)
         {
         }
@@ -54,4 +54,4 @@ namespace NgninxProxyManager.SDK.Services
             await SendAsync<object>(request, cancellationToken);
         }
     }
-} 
+}

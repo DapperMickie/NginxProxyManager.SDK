@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json.Serialization;
 
-namespace NgninxProxyManager.SDK.Models.DeadHosts
+namespace NginxProxyManager.SDK.Models.DeadHosts
 {
     public class DeadHost
     {

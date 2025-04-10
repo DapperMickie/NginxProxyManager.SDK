@@ -2,11 +2,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using NgninxProxyManager.SDK.Configuration;
-using NgninxProxyManager.SDK.Services;
-using NgninxProxyManager.SDK.Services.Interfaces;
+using NginxProxyManager.SDK.Configuration;
+using NginxProxyManager.SDK.Services;
+using NginxProxyManager.SDK.Services.Interfaces;
 
-namespace NgninxProxyManager.SDK.Extensions
+namespace NginxProxyManager.SDK.Extensions
 {
     public static class ServiceCollectionExtensions
     {
