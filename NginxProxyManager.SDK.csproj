@@ -6,6 +6,16 @@
 		<Nullable>enable</Nullable>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<Version>1.0.0</Version>
+		<Authors>DapperMickie</Authors>
+		<Company>Dapper Dino</Company>
+		<Description>A .NET SDK for interacting with the Nginx Proxy Manager API</Description>
+		<PackageTags>nginx;proxy;manager;api;sdk;dotnet</PackageTags>
+		<PackageProjectUrl>https://github.com/DapperMickie/NginxProxyManager.SDK</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/DapperMickie/NginxProxyManager.SDK</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageReleaseNotes>Initial release of NginxProxyManager.SDK</PackageReleaseNotes>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
