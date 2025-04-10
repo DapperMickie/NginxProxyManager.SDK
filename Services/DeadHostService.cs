@@ -1,7 +1,5 @@
 using System;
 using System.Net.Http;
-using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using NginxProxyManager.SDK.Models.DeadHosts;
@@ -9,76 +7,53 @@ using NginxProxyManager.SDK.Services.Interfaces;
 
 namespace NginxProxyManager.SDK.Services
 {
-    public class DeadHostService : IDeadHostService
+    public class DeadHostService : NPMServiceBase, IDeadHostService
     {
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _jsonOptions;
-
-        public DeadHostService(HttpClient httpClient)
+        public DeadHostService(HttpClient httpClient, string baseUrl)
+            : base(httpClient, baseUrl)
         {
-            _httpClient = httpClient;
-            _jsonOptions = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
         }
 
         public async Task<DeadHost[]> GetDeadHostsAsync(CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.GetAsync("api/dead-hosts", cancellationToken);
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync(cancellationToken);
-            return JsonSerializer.Deserialize<DeadHost[]>(content, _jsonOptions);
+            using var request = CreateRequest(HttpMethod.Get, "api/dead-hosts");
+            return await SendAsync<DeadHost[]>(request, cancellationToken);
         }
 
         public async Task<DeadHost> GetDeadHostAsync(int deadHostId, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.GetAsync($"api/dead-hosts/{deadHostId}", cancellationToken);
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync(cancellationToken);
-            return JsonSerializer.Deserialize<DeadHost>(content, _jsonOptions);
+            using var request = CreateRequest(HttpMethod.Get, $"api/dead-hosts/{deadHostId}");
+            return await SendAsync<DeadHost>(request, cancellationToken);
         }
 
         public async Task<DeadHost> CreateDeadHostAsync(CreateDeadHostRequest request, CancellationToken cancellationToken = default)
         {
-            var json = JsonSerializer.Serialize(request, _jsonOptions);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("api/dead-hosts", content, cancellationToken);
-            response.EnsureSuccessStatusCode();
-            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            return JsonSerializer.Deserialize<DeadHost>(responseContent, _jsonOptions);
+            using var httpRequest = CreateRequest(HttpMethod.Post, "api/dead-hosts", request);
+            return await SendAsync<DeadHost>(httpRequest, cancellationToken);
         }
 
         public async Task<DeadHost> UpdateDeadHostAsync(int deadHostId, UpdateDeadHostRequest request, CancellationToken cancellationToken = default)
         {
-            var json = JsonSerializer.Serialize(request, _jsonOptions);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PutAsync($"api/dead-hosts/{deadHostId}", content, cancellationToken);
-            response.EnsureSuccessStatusCode();
-            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            return JsonSerializer.Deserialize<DeadHost>(responseContent, _jsonOptions);
+            using var httpRequest = CreateRequest(HttpMethod.Put, $"api/dead-hosts/{deadHostId}", request);
+            return await SendAsync<DeadHost>(httpRequest, cancellationToken);
         }
 
         public async Task DeleteDeadHostAsync(int deadHostId, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.DeleteAsync($"api/dead-hosts/{deadHostId}", cancellationToken);
-            response.EnsureSuccessStatusCode();
+            using var request = CreateRequest(HttpMethod.Delete, $"api/dead-hosts/{deadHostId}");
+            await SendAsync<object>(request, cancellationToken);
         }
 
         public async Task<DeadHost[]> GetDeadHostsByDomainAsync(string domainName, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.GetAsync($"api/dead-hosts/domain/{domainName}", cancellationToken);
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync(cancellationToken);
-            return JsonSerializer.Deserialize<DeadHost[]>(content, _jsonOptions);
+            using var request = CreateRequest(HttpMethod.Get, $"api/dead-hosts/domain/{domainName}");
+            return await SendAsync<DeadHost[]>(request, cancellationToken);
         }
 
         public async Task<DeadHost[]> GetDeadHostsByForwardHostAsync(string forwardHost, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.GetAsync($"api/dead-hosts/forward-host/{forwardHost}", cancellationToken);
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync(cancellationToken);
-            return JsonSerializer.Deserialize<DeadHost[]>(content, _jsonOptions);
+            using var request = CreateRequest(HttpMethod.Get, $"api/dead-hosts/forward-host/{forwardHost}");
+            return await SendAsync<DeadHost[]>(request, cancellationToken);
         }
     }
 } 
