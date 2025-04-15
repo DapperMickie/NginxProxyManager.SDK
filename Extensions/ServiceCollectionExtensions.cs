@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using NginxProxyManager.SDK.Configuration;
 using NginxProxyManager.SDK.Services;
 using NginxProxyManager.SDK.Services.Interfaces;
+using NginxProxyManager.SDK.Client;
 
 namespace NginxProxyManager.SDK.Extensions
 {
@@ -34,6 +35,12 @@ namespace NginxProxyManager.SDK.Extensions
             services.AddScoped<IProxyHostService, ProxyHostService>();
             services.AddScoped<IRedirectionService, RedirectionService>();
             services.AddScoped<IStreamService, StreamService>();
+            services.AddScoped<IAuditLogService, AuditLogService>();
+            services.AddScoped<IServerErrorService, ServerErrorService>();
+
+            services.AddScoped(sp => 
+                new NginxProxyManagerClient(configuration.BaseUrl, AuthenticationCredentials.FromCredentials(configuration.Email, configuration.Password))
+            );
 
             return services;
         }
