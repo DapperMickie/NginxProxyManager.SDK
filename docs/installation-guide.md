@@ -30,75 +30,157 @@ Install-Package NginxProxyManager.SDK
 ```csharp
 using NginxProxyManager.SDK;
 
-// Create a client with your Nginx Proxy Manager instance URL and API key
-var client = new NginxProxyManagerClient("https://your-npm-instance.com", "your-api-key");
+// Create a client with your Nginx Proxy Manager instance URL and credentials
+var client = new NginxProxyManagerClient("http://your-npm-instance:81", "admin@example.com", "your-password");
 ```
 
-### Using Services
+### Using Resources
 
-The SDK provides several services for interacting with the Nginx Proxy Manager API:
+The SDK provides several resources for interacting with the Nginx Proxy Manager API:
 
-#### Proxy Service
+#### Proxy Hosts
 
 ```csharp
 // Get all proxy hosts
-var proxyService = client.ProxyService;
-var proxyHosts = await proxyService.GetProxyHostsAsync();
-
-// Get a specific proxy host
-var proxyHost = await proxyService.GetProxyHostAsync(1);
-
-// Create a new proxy host
-var createRequest = new ProxyHostCreateRequest
+var result = await client.ProxyHosts.GetAllAsync();
+if (result.IsSuccess)
 {
-    DomainNames = new[] { "example.com" },
-    ForwardHost = "192.168.1.100",
-    ForwardPort = 80,
-    ForwardScheme = "http"
-};
-var newProxyHost = await proxyService.CreateProxyHostAsync(createRequest);
+    foreach (var host in result.Data)
+    {
+        Console.WriteLine($"Proxy Host: {host.DomainNames[0]} -> {host.ForwardHost}:{host.ForwardPort}");
+    }
+}
+
+// Create a new proxy host using the builder pattern
+var proxyHost = await client.ProxyHosts.CreateBuilder()
+    .WithDomainNames("example.com")
+    .WithForwardHost("192.168.1.100")
+    .WithForwardPort(80)
+    .WithForwardScheme("http")
+    .Build();
+
+var createResult = await client.ProxyHosts.CreateAsync(proxyHost);
+if (createResult.IsSuccess)
+{
+    Console.WriteLine($"Created proxy host with ID: {createResult.Data.Id}");
+}
 ```
 
-#### Certificate Service
+#### Certificates
 
 ```csharp
 // Get all certificates
-var certificateService = client.CertificateService;
-var certificates = await certificateService.GetCertificatesAsync();
-
-// Get a specific certificate
-var certificate = await certificateService.GetCertificateAsync(1);
-
-// Create a new certificate
-var createRequest = new CertificateCreateRequest
+var result = await client.Certificates.GetAllAsync();
+if (result.IsSuccess)
 {
-    DomainNames = new[] { "example.com" },
-    Email = "admin@example.com",
-    Provider = "letsencrypt"
-};
-var newCertificate = await certificateService.CreateCertificateAsync(createRequest);
+    foreach (var cert in result.Data)
+    {
+        Console.WriteLine($"Certificate: {cert.DomainNames[0]} (Expires: {cert.ExpiresOn})");
+    }
+}
+
+// Create a new certificate using the builder pattern
+var certificate = await client.Certificates.CreateBuilder()
+    .WithDomainNames("example.com")
+    .WithEmail("admin@example.com")
+    .WithProvider("letsencrypt")
+    .Build();
+
+var createResult = await client.Certificates.CreateAsync(certificate);
+if (createResult.IsSuccess)
+{
+    Console.WriteLine($"Created certificate with ID: {createResult.Data.Id}");
+}
 ```
 
-#### Dead Host Service
+#### Access Lists
 
 ```csharp
-// Get all dead hosts
-var deadHostService = client.DeadHostService;
-var deadHosts = await deadHostService.GetDeadHostsAsync();
+// Get all access lists
+var result = await client.AccessLists.GetAllAsync();
+if (result.IsSuccess)
+{
+    foreach (var list in result.Data)
+    {
+        Console.WriteLine($"Access List: {list.Name} ({list.Rules.Count} rules)");
+    }
+}
 
-// Get dead hosts by domain
-var deadHostsByDomain = await deadHostService.GetDeadHostsByDomainAsync("example.com");
+// Create a new access list using the builder pattern
+var accessList = await client.AccessLists.CreateBuilder()
+    .WithName("Basic Access List")
+    .WithSatisfy("any")
+    .WithRules(new[]
+    {
+        new AccessListRule
+        {
+            Name = "Allow Local Network",
+            Rule = "allow 192.168.1.0/24"
+        }
+    })
+    .Build();
+
+var createResult = await client.AccessLists.CreateAsync(accessList);
+if (createResult.IsSuccess)
+{
+    Console.WriteLine($"Created access list with ID: {createResult.Data.Id}");
+}
 ```
 
-#### Audit Log Service
+#### Streams
 
 ```csharp
-// Get all audit logs
-var auditLogService = client.AuditLogService;
-var auditLogs = await auditLogService.GetAuditLogsAsync();
+// Get all streams
+var result = await client.Streams.GetAllAsync();
+if (result.IsSuccess)
+{
+    foreach (var stream in result.Data)
+    {
+        Console.WriteLine($"Stream: {stream.IncomingPort} -> {stream.ForwardingHost}:{stream.ForwardingPort}");
+    }
+}
 
-// Get audit logs by user
-var auditLogsByUser = await auditLogService.GetAuditLogsByUserIdAsync(1);
+// Create a new stream using the builder pattern
+var stream = await client.Streams.CreateBuilder()
+    .WithIncomingPort(8080)
+    .WithForwardingHost("192.168.1.100")
+    .WithForwardingPort(80)
+    .WithTcpForwarding(true)
+    .Build();
+
+var createResult = await client.Streams.CreateAsync(stream);
+if (createResult.IsSuccess)
+{
+    Console.WriteLine($"Created stream with ID: {createResult.Data.Id}");
+}
+```
+
+#### Audit Logs
+
+```csharp
+// Get recent audit logs
+var result = await client.AuditLogs.GetRecentAsync();
+if (result.IsSuccess)
+{
+    foreach (var log in result.Data)
+    {
+        Console.WriteLine($"Audit Log: {log.Action} by {log.User} at {log.Timestamp}");
+    }
+}
+```
+
+#### Server Errors
+
+```csharp
+// Get all server errors
+var result = await client.ServerErrors.GetAllAsync();
+if (result.IsSuccess)
+{
+    foreach (var error in result.Data)
+    {
+        Console.WriteLine($"Server Error: {error.Message} for host {error.HostId}");
+    }
+}
 ```
 
 ## Advanced Configuration
@@ -111,8 +193,9 @@ You can register the client with dependency injection:
 // In your Startup.cs or Program.cs
 services.AddNginxProxyManager(options =>
 {
-    options.BaseUrl = "https://your-npm-instance.com";
-    options.ApiKey = "your-api-key";
+    options.BaseUrl = "http://your-npm-instance:81";
+    options.Username = "admin@example.com";
+    options.Password = "your-password";
 });
 
 // In your controller or service
@@ -137,7 +220,27 @@ You can provide a custom HTTP client:
 var httpClient = new HttpClient();
 httpClient.DefaultRequestHeaders.Add("X-Custom-Header", "value");
 
-var client = new NginxProxyManagerClient(httpClient, "https://your-npm-instance.com", "your-api-key");
+var client = new NginxProxyManagerClient(httpClient, "http://your-npm-instance:81", "admin@example.com", "your-password");
+```
+
+## Error Handling
+
+All operations return an `OperationResult<T>` that contains the result of the operation and any error information:
+
+```csharp
+var result = await client.ProxyHosts.CreateAsync(proxyHost);
+if (result.IsSuccess)
+{
+    // Use the created item
+    var item = result.Data;
+}
+else
+{
+    // Handle the error
+    var error = result.Error;
+    Console.WriteLine($"Error: {error.Message}");
+    Console.WriteLine($"Details: {error.Details}");
+}
 ```
 
 ## Troubleshooting
@@ -145,7 +248,7 @@ var client = new NginxProxyManagerClient(httpClient, "https://your-npm-instance.
 ### Common Issues
 
 - **Connection Errors**: Make sure your Nginx Proxy Manager instance is accessible
-- **Authentication Errors**: Verify your API key is correct
+- **Authentication Errors**: Verify your credentials are correct
 - **Serialization Errors**: Check that your request objects match the expected format
 
 ### Getting Help

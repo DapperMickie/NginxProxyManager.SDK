@@ -1,59 +1,141 @@
 using System;
 using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using NginxProxyManager.SDK.Models.DeadHosts;
 using NginxProxyManager.SDK.Services.Interfaces;
+using NginxProxyManager.SDK.Common;
+using System.Diagnostics;
 
 namespace NginxProxyManager.SDK.Services
 {
-    public class DeadHostService : NPMServiceBase, IDeadHostService
+    /// <summary>
+    /// Service for managing dead hosts
+    /// </summary>
+    public class DeadHostService : IDeadHostService
     {
-        public DeadHostService(HttpClient httpClient, string baseUrl)
-            : base(httpClient, baseUrl)
+        private readonly HttpClient _httpClient;
+        private readonly JsonSerializerOptions _jsonOptions;
+        private const string BasePath = "api/dead-hosts";
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeadHostService"/> class.
+        /// </summary>
+        /// <param name="httpClient">The HTTP client</param>
+        public DeadHostService(HttpClient httpClient)
         {
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
         }
 
-        public async Task<DeadHost[]> GetDeadHostsAsync(CancellationToken cancellationToken = default)
+        /// <inheritdoc />
+        public async Task<OperationResult<DeadHost[]>> GetAllAsync()
         {
-            using var request = CreateRequest(HttpMethod.Get, "api/dead-hosts");
-            return await SendAsync<DeadHost[]>(request, cancellationToken);
+            try
+            {
+                Debug.WriteLine($"Making GET request to: {BasePath}");
+                var response = await _httpClient.GetFromJsonAsync<DeadHost[]>(BasePath);
+                return OperationResult<DeadHost[]>.Success(response);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in GetAllAsync: {ex}");
+                return OperationResult<DeadHost[]>.Failure(ex);
+            }
         }
 
-        public async Task<DeadHost> GetDeadHostAsync(int deadHostId, CancellationToken cancellationToken = default)
+        /// <inheritdoc />
+        public async Task<OperationResult<DeadHost>> GetByIdAsync(int id)
         {
-            using var request = CreateRequest(HttpMethod.Get, $"api/dead-hosts/{deadHostId}");
-            return await SendAsync<DeadHost>(request, cancellationToken);
+            try
+            {
+                var response = await _httpClient.GetFromJsonAsync<DeadHost>($"{BasePath}/{id}");
+                return OperationResult<DeadHost>.Success(response);
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<DeadHost>.Failure(ex);
+            }
         }
 
-        public async Task<DeadHost> CreateDeadHostAsync(CreateDeadHostRequest request, CancellationToken cancellationToken = default)
+        /// <inheritdoc />
+        public async Task<OperationResult<DeadHost>> CreateAsync(CreateDeadHostRequest request)
         {
-            using var httpRequest = CreateRequest(HttpMethod.Post, "api/dead-hosts", request);
-            return await SendAsync<DeadHost>(httpRequest, cancellationToken);
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync(BasePath, request);
+                response.EnsureSuccessStatusCode();
+                var result = await response.Content.ReadFromJsonAsync<DeadHost>();
+                return OperationResult<DeadHost>.Success(result);
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<DeadHost>.Failure(ex);
+            }
         }
 
-        public async Task<DeadHost> UpdateDeadHostAsync(int deadHostId, UpdateDeadHostRequest request, CancellationToken cancellationToken = default)
+        /// <inheritdoc />
+        public async Task<OperationResult<DeadHost>> UpdateAsync(int id, UpdateDeadHostRequest request)
         {
-            using var httpRequest = CreateRequest(HttpMethod.Put, $"api/dead-hosts/{deadHostId}", request);
-            return await SendAsync<DeadHost>(httpRequest, cancellationToken);
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync($"{BasePath}/{id}", request);
+                response.EnsureSuccessStatusCode();
+                var result = await response.Content.ReadFromJsonAsync<DeadHost>();
+                return OperationResult<DeadHost>.Success(result);
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<DeadHost>.Failure(ex);
+            }
         }
 
-        public async Task DeleteDeadHostAsync(int deadHostId, CancellationToken cancellationToken = default)
+        /// <inheritdoc />
+        public async Task<OperationResult<bool>> DeleteAsync(int id)
         {
-            using var request = CreateRequest(HttpMethod.Delete, $"api/dead-hosts/{deadHostId}");
-            await SendAsync<object>(request, cancellationToken);
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"{BasePath}/{id}");
+                response.EnsureSuccessStatusCode();
+                return OperationResult<bool>.Success(true);
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<bool>.Failure(ex);
+            }
         }
 
-        public async Task<DeadHost[]> GetDeadHostsByDomainAsync(string domainName, CancellationToken cancellationToken = default)
+        /// <inheritdoc />
+        public async Task<OperationResult<DeadHost[]>> GetByDomainAsync(string domainName)
         {
-            using var request = CreateRequest(HttpMethod.Get, $"api/dead-hosts/domain/{domainName}");
-            return await SendAsync<DeadHost[]>(request, cancellationToken);
+            try
+            {
+                var response = await _httpClient.GetFromJsonAsync<DeadHost[]>($"{BasePath}/domain/{domainName}");
+                return OperationResult<DeadHost[]>.Success(response);
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<DeadHost[]>.Failure(ex);
+            }
         }
 
-        public async Task<DeadHost[]> GetDeadHostsByForwardHostAsync(string forwardHost, CancellationToken cancellationToken = default)
+        /// <inheritdoc />
+        public async Task<OperationResult<DeadHost[]>> GetByForwardHostAsync(string forwardHost)
         {
-            using var request = CreateRequest(HttpMethod.Get, $"api/dead-hosts/forward-host/{forwardHost}");
-            return await SendAsync<DeadHost[]>(request, cancellationToken);
+            try
+            {
+                var response = await _httpClient.GetFromJsonAsync<DeadHost[]>($"{BasePath}/forward-host/{forwardHost}");
+                return OperationResult<DeadHost[]>.Success(response);
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<DeadHost[]>.Failure(ex);
+            }
         }
     }
 } 

@@ -1,69 +1,80 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using NginxProxyManager.SDK.Common;
 using NginxProxyManager.SDK.Models.Streams;
 using NginxProxyManager.SDK.Services.Interfaces;
 
 namespace NginxProxyManager.SDK.Services
 {
+    /// <summary>
+    /// Service for interacting with the streams API
+    /// </summary>
     public class StreamService : NPMServiceBase, IStreamService
     {
-        public StreamService(HttpClient httpClient, string baseUrl) 
-            : base(httpClient, baseUrl)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StreamService"/> class.
+        /// </summary>
+        /// <param name="httpClient">The HTTP client</param>
+        public StreamService(HttpClient httpClient) : base(httpClient, "api/nginx/streams")
         {
         }
 
-        public Task<StreamModel[]> GetStreamsAsync(CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public async Task<OperationResult<NginxProxyManager.SDK.Models.Streams.Stream[]>> GetStreamsAsync(string expand = null, CancellationToken cancellationToken = default)
         {
-            return GetStreamsAsync(null, cancellationToken);
-        }
-
-        public async Task<StreamModel[]> GetStreamsAsync(string expand, CancellationToken cancellationToken)
-        {
-            var path = "nginx/streams";
-            if (!string.IsNullOrEmpty(expand))
-            {
-                path += $"?expand={expand}";
-            }
-
+            var path = expand != null ? $"?expand={expand}" : "";
             using var request = CreateRequest(HttpMethod.Get, path);
-            return await SendAsync<StreamModel[]>(request, cancellationToken);
+            var result = await SendAsync<NginxProxyManager.SDK.Models.Streams.Stream[]>(request, cancellationToken);
+            return new OperationResult<NginxProxyManager.SDK.Models.Streams.Stream[]>(result);
         }
 
-        public async Task<StreamModel> GetStreamAsync(int streamId, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public async Task<OperationResult<NginxProxyManager.SDK.Models.Streams.Stream>> GetStreamAsync(int streamId, CancellationToken cancellationToken = default)
         {
-            using var request = CreateRequest(HttpMethod.Get, $"nginx/streams/{streamId}");
-            return await SendAsync<StreamModel>(request, cancellationToken);
+            using var request = CreateRequest(HttpMethod.Get, streamId.ToString());
+            var result = await SendAsync<NginxProxyManager.SDK.Models.Streams.Stream>(request, cancellationToken);
+            return new OperationResult<NginxProxyManager.SDK.Models.Streams.Stream>(result);
         }
 
-        public async Task<StreamModel> CreateStreamAsync(CreateStreamRequest request, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public async Task<OperationResult<NginxProxyManager.SDK.Models.Streams.Stream>> CreateStreamAsync(NginxProxyManager.SDK.Models.Streams.Stream stream, CancellationToken cancellationToken = default)
         {
-            using var httpRequest = CreateRequest(HttpMethod.Post, "nginx/streams", request);
-            return await SendAsync<StreamModel>(httpRequest, cancellationToken);
+            using var request = CreateRequest(HttpMethod.Post, "", stream);
+            var result = await SendAsync<NginxProxyManager.SDK.Models.Streams.Stream>(request, cancellationToken);
+            return new OperationResult<NginxProxyManager.SDK.Models.Streams.Stream>(result);
         }
 
-        public async Task<StreamModel> UpdateStreamAsync(int streamId, UpdateStreamRequest request, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public async Task<OperationResult<NginxProxyManager.SDK.Models.Streams.Stream>> UpdateStreamAsync(int streamId, NginxProxyManager.SDK.Models.Streams.Stream stream, CancellationToken cancellationToken = default)
         {
-            using var httpRequest = CreateRequest(HttpMethod.Put, $"nginx/streams/{streamId}", request);
-            return await SendAsync<StreamModel>(httpRequest, cancellationToken);
+            using var request = CreateRequest(HttpMethod.Put, streamId.ToString(), stream);
+            var result = await SendAsync<NginxProxyManager.SDK.Models.Streams.Stream>(request, cancellationToken);
+            return new OperationResult<NginxProxyManager.SDK.Models.Streams.Stream>(result);
         }
 
-        public async Task DeleteStreamAsync(int streamId, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public async Task<OperationResult<object>> DeleteStreamAsync(int streamId, CancellationToken cancellationToken = default)
         {
-            using var request = CreateRequest(HttpMethod.Delete, $"nginx/streams/{streamId}");
+            using var request = CreateRequest(HttpMethod.Delete, streamId.ToString());
             await SendAsync<object>(request, cancellationToken);
+            return new OperationResult<object>(null);
         }
 
-        public async Task<bool> EnableStreamAsync(int streamId, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public async Task<OperationResult<object>> EnableStreamAsync(int streamId, CancellationToken cancellationToken = default)
         {
-            using var request = CreateRequest(HttpMethod.Post, $"nginx/streams/{streamId}/enable");
-            return await SendAsync<bool>(request, cancellationToken);
+            using var request = CreateRequest(HttpMethod.Post, $"{streamId}/enable");
+            await SendAsync<object>(request, cancellationToken);
+            return new OperationResult<object>(null);
         }
 
-        public async Task<bool> DisableStreamAsync(int streamId, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public async Task<OperationResult<object>> DisableStreamAsync(int streamId, CancellationToken cancellationToken = default)
         {
-            using var request = CreateRequest(HttpMethod.Post, $"nginx/streams/{streamId}/disable");
-            return await SendAsync<bool>(request, cancellationToken);
+            using var request = CreateRequest(HttpMethod.Post, $"{streamId}/disable");
+            await SendAsync<object>(request, cancellationToken);
+            return new OperationResult<object>(null);
         }
     }
 } 

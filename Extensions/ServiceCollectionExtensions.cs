@@ -31,7 +31,7 @@ namespace NginxProxyManager.SDK.Extensions
             // Register all other services
             services.AddScoped<IAccessListService, AccessListService>();
             services.AddScoped<ICertificateService, CertificateService>();
-            services.AddScoped<IProxyService, ProxyService>();
+            services.AddScoped<IProxyHostService, ProxyHostService>();
             services.AddScoped<IRedirectionService, RedirectionService>();
             services.AddScoped<IStreamService, StreamService>();
 

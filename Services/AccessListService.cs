@@ -1,57 +1,78 @@
-using System.Net.Http;
-using System.Threading;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using NginxProxyManager.SDK.Common;
 using NginxProxyManager.SDK.Models.AccessLists;
 using NginxProxyManager.SDK.Services.Interfaces;
 
 namespace NginxProxyManager.SDK.Services
 {
+    /// <summary>
+    /// Service for managing access lists
+    /// </summary>
     public class AccessListService : NPMServiceBase, IAccessListService
     {
-        public AccessListService(HttpClient httpClient, string baseUrl)
-            : base(httpClient, baseUrl)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccessListService"/> class.
+        /// </summary>
+        /// <param name="httpClient">The HTTP client</param>
+        public AccessListService(System.Net.Http.HttpClient httpClient) : base(httpClient, "api/access-lists")
         {
         }
 
-        public Task<AccessList[]> GetAccessListsAsync(CancellationToken cancellationToken = default)
+        /// <inheritdoc />
+        public async Task<OperationResult<AccessList>> GetByIdAsync(int id)
         {
-            return GetAccessListsAsync(null, cancellationToken);
+            var request = CreateRequest(System.Net.Http.HttpMethod.Get, $"{id}");
+            var result = await SendAsync<AccessList>(request);
+            return new OperationResult<AccessList>(result);
         }
 
-        public async Task<AccessList[]> GetAccessListsAsync(string expand, CancellationToken cancellationToken)
+        /// <inheritdoc />
+        public async Task<OperationResult<IEnumerable<AccessList>>> GetAllAsync()
         {
-            var path = "nginx/access-lists";
-            if (!string.IsNullOrEmpty(expand))
-            {
-                path += $"?expand={expand}";
-            }
-
-            using var request = CreateRequest(HttpMethod.Get, path);
-            return await SendAsync<AccessList[]>(request, cancellationToken);
+            var request = CreateRequest(System.Net.Http.HttpMethod.Get, "");
+            var result = await SendAsync<IEnumerable<AccessList>>(request);
+            return new OperationResult<IEnumerable<AccessList>>(result);
         }
 
-        public async Task<AccessList> CreateAccessListAsync(AccessListCreateRequest request, CancellationToken cancellationToken = default)
+        /// <inheritdoc />
+        public async Task<OperationResult<AccessList>> CreateAsync(AccessListCreateRequest accessList)
         {
-            using var httpRequest = CreateRequest(HttpMethod.Post, "nginx/access-lists", request);
-            return await SendAsync<AccessList>(httpRequest, cancellationToken);
+            var request = CreateRequest(System.Net.Http.HttpMethod.Post, "", accessList);
+            var result = await SendAsync<AccessList>(request);
+            return new OperationResult<AccessList>(result);
         }
 
-        public async Task<AccessListFull> GetAccessListAsync(int listId, CancellationToken cancellationToken = default)
+        /// <inheritdoc />
+        public async Task<OperationResult<AccessList>> UpdateAsync(int id, AccessListUpdateRequest accessList)
         {
-            using var request = CreateRequest(HttpMethod.Get, $"nginx/access-lists/{listId}");
-            return await SendAsync<AccessListFull>(request, cancellationToken);
+            var request = CreateRequest(System.Net.Http.HttpMethod.Put, $"{id}", accessList);
+            var result = await SendAsync<AccessList>(request);
+            return new OperationResult<AccessList>(result);
         }
 
-        public async Task<AccessList> UpdateAccessListAsync(int listId, AccessListUpdateRequest request, CancellationToken cancellationToken = default)
+        /// <inheritdoc />
+        public async Task<OperationResult<bool>> DeleteAsync(int id)
         {
-            using var httpRequest = CreateRequest(HttpMethod.Put, $"nginx/access-lists/{listId}", request);
-            return await SendAsync<AccessList>(httpRequest, cancellationToken);
+            var request = CreateRequest(System.Net.Http.HttpMethod.Delete, $"{id}");
+            await SendAsync<object>(request);
+            return new OperationResult<bool>(true);
         }
 
-        public async Task DeleteAccessListAsync(int listId, CancellationToken cancellationToken = default)
+        /// <inheritdoc />
+        public async Task<OperationResult<bool>> EnableAccessListAsync(int id)
         {
-            using var request = CreateRequest(HttpMethod.Delete, $"nginx/access-lists/{listId}");
-            await SendAsync<object>(request, cancellationToken);
+            var request = CreateRequest(System.Net.Http.HttpMethod.Post, $"{id}/enable");
+            await SendAsync<object>(request);
+            return new OperationResult<bool>(true);
+        }
+
+        /// <inheritdoc />
+        public async Task<OperationResult<bool>> DisableAccessListAsync(int id)
+        {
+            var request = CreateRequest(System.Net.Http.HttpMethod.Post, $"{id}/disable");
+            await SendAsync<object>(request);
+            return new OperationResult<bool>(true);
         }
     }
 }

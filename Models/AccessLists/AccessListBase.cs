@@ -1,47 +1,60 @@
-using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace NginxProxyManager.SDK.Models.AccessLists
 {
     public class AccessListBase
     {
-        [JsonProperty("id", Required = Required.Always)]
-        [Range(1, int.MaxValue)]
+        /// <summary>
+        /// Unique identifier for the access list
+        /// </summary>
+        [JsonPropertyName("id")]
         public int Id { get; set; }
 
-        [JsonProperty("created_on", Required = Required.Always)]
-        [Required(AllowEmptyStrings = true)]
-        public string CreatedOn { get; set; }
-
-        [JsonProperty("modified_on", Required = Required.Always)]
-        [Required(AllowEmptyStrings = true)]
-        public string ModifiedOn { get; set; }
-
-        [JsonProperty("owner_user_id", Required = Required.Always)]
-        [Range(1, int.MaxValue)]
-        public int OwnerUserId { get; set; }
-
-        [JsonProperty("name", Required = Required.Always)]
+        /// <summary>
+        /// Name of the access list
+        /// </summary>
+        [JsonPropertyName("name")]
         [Required]
+        [MinLength(1)]
         public string Name { get; set; }
 
-        [JsonProperty("directive", Required = Required.Always)]
-        [Required(AllowEmptyStrings = true)]
-        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public AccessListDirective Directive { get; set; }
+        /// <summary>
+        /// Description of the access list
+        /// </summary>
+        [JsonPropertyName("description")]
+        public string Description { get; set; }
 
-        [JsonProperty("address", Required = Required.Always)]
-        [Required(AllowEmptyStrings = true)]
-        public string Address { get; set; }
+        /// <summary>
+        /// Whether the access list is enabled
+        /// </summary>
+        [JsonPropertyName("enabled")]
+        public bool Enabled { get; set; }
 
-        [JsonProperty("satisfy_any", Required = Required.Always)]
-        public bool SatisfyAny { get; set; }
-
-        [JsonProperty("pass_auth", Required = Required.Always)]
-        public bool PassAuth { get; set; }
-
-        [JsonProperty("meta", Required = Required.Always)]
+        /// <summary>
+        /// Whether to satisfy all conditions (AND) or any condition (OR)
+        /// </summary>
+        [JsonPropertyName("satisfy")]
         [Required]
-        public object Meta { get; set; } = new object();
+        public string Satisfy { get; set; }
+
+        /// <summary>
+        /// IP addresses that are allowed/denied
+        /// </summary>
+        [JsonPropertyName("ip_addresses")]
+        public string IpAddresses { get; set; }
+
+        /// <summary>
+        /// Basic authentication credentials
+        /// </summary>
+        [JsonPropertyName("basic_auth")]
+        public string BasicAuth { get; set; }
+
+        /// <summary>
+        /// Whether to allow or deny access
+        /// </summary>
+        [JsonPropertyName("action")]
+        [Required]
+        public string Action { get; set; }
     }
 } 

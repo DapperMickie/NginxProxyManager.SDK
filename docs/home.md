@@ -8,18 +8,18 @@ To use this SDK, you need to:
 
 1. Install the NuGet package
 2. Configure the client with your Nginx Proxy Manager instance URL and credentials
-3. Use the services to interact with the API
+3. Use the resources to interact with the API
 
-## Available Services
+## Available Resources
 
-The SDK provides the following services:
+The SDK provides the following resources:
 
-- [Proxy Service](Proxy-Service) - Manage proxy hosts
-- [Certificate Service](Certificate-Service) - Manage SSL certificates
-- [Dead Host Service](Dead-Host-Service) - Manage dead hosts
-- [Audit Log Service](Audit-Log-Service) - Access audit logs
-- [Server Error Service](Server-Error-Service) - Handle server errors
-- [Report Service](Report-Service) - Generate reports
+- [Proxy Hosts](proxy-hosts.md) - Manage proxy hosts
+- [Certificates](certificates.md) - Manage SSL certificates
+- [Access Lists](access-lists.md) - Manage access lists
+- [Streams](streams.md) - Manage TCP/UDP streams
+- [Audit Logs](audit-logs.md) - Access audit logs
+- [Server Errors](server-errors.md) - Handle server errors
 
 ## Installation
 
@@ -31,15 +31,36 @@ dotnet add package NginxProxyManager.SDK
 
 ```csharp
 using NginxProxyManager.SDK;
-using NginxProxyManager.SDK.Services;
 
 // Create a client
-var client = new NginxProxyManagerClient("https://your-npm-instance.com", "your-api-key");
+var client = new NginxProxyManagerClient("http://your-npm-instance:81", "admin@example.com", "your-password");
 
-// Use services
-var proxyService = client.ProxyService;
-var certificates = await proxyService.GetProxyHostsAsync();
+// Use resources
+var result = await client.ProxyHosts.GetAllAsync();
+if (result.IsSuccess)
+{
+    foreach (var host in result.Data)
+    {
+        Console.WriteLine($"Proxy Host: {host.DomainNames[0]} -> {host.ForwardHost}:{host.ForwardPort}");
+    }
+}
 ```
+
+## Features
+
+- **Client-Based Approach**: Access all resources through a single client instance
+- **Fluent Builder Pattern**: Create resources using a fluent builder pattern
+- **Operation Result Pattern**: Consistent error handling across all operations
+- **Async/Await Support**: All operations are asynchronous
+- **Dependency Injection**: Easy integration with .NET dependency injection
+- **Comprehensive Documentation**: Detailed documentation for all resources
+
+## Quick Links
+
+- [Installation Guide](installation-guide.md)
+- [Configuration](configuration.md)
+- [Error Handling](error-handling.md)
+- [Best Practices](best-practices.md)
 
 ## Contributing
 

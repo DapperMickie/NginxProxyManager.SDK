@@ -1,62 +1,34 @@
 # Nginx Proxy Manager SDK
 
-A .NET SDK for interacting with the Nginx Proxy Manager API. This SDK provides a type-safe and intuitive way to manage your Nginx Proxy Manager instance programmatically.
+A .NET SDK for interacting with the Nginx Proxy Manager API.
 
 ## Features
 
+- Client-based approach for easy access to all resources
+- Fluent builder pattern for creating requests
+- Comprehensive error handling with OperationResult pattern
+- Automatic token management and refresh
 - Full support for all Nginx Proxy Manager API endpoints
-- Type-safe models and requests
-- Dependency injection support
-- Async/await pattern
-- Comprehensive error handling
-- Configuration through appsettings.json or code
 
 ## Installation
 
 ```bash
-dotnet add package NgninxProxyManager.SDK
+dotnet add package NginxProxyManager.SDK
 ```
 
 ## Quick Start
 
-1. Add the SDK to your service collection:
-
 ```csharp
-// Using configuration from appsettings.json
-services.AddNginxProxyManager();
+// Create a client
+var client = new NginxProxyManagerClient("http://your-npm-instance:81", "admin@example.com", "your-password");
 
-// Or using code configuration
-services.AddNginxProxyManager(new NPMConfiguration
+// List all proxy hosts
+var result = await client.ProxyHosts.GetAllAsync();
+if (result.IsSuccess)
 {
-    BaseUrl = "http://your-npm-instance:81",
-    TimeoutSeconds = 30
-});
-```
-
-2. Inject and use the services:
-
-```csharp
-public class YourService
-{
-    private readonly IProxyService _proxyService;
-    private readonly ICertificateService _certificateService;
-
-    public YourService(IProxyService proxyService, ICertificateService certificateService)
+    foreach (var proxy in result.Data)
     {
-        _proxyService = proxyService;
-        _certificateService = certificateService;
-    }
-
-    public async Task CreateProxyHostAsync()
-    {
-        var request = new CreateProxyRequest
-        {
-            DomainName = "example.com",
-            ForwardHost = "192.168.1.100",
-            ForwardPort = 8080
-        };
-
-        var proxy = await _proxyService.CreateProxyAsync(request);
+        Console.WriteLine($"Proxy: {proxy.DomainNames[0]} -> {proxy.ForwardHost}:{proxy.ForwardPort}");
     }
 }
 ```
@@ -69,7 +41,9 @@ public class YourService
 {
   "NginxProxyManager": {
     "BaseUrl": "http://your-npm-instance:81",
-    "TimeoutSeconds": 30
+    "TimeoutSeconds": 30,
+    "Email": "admin@example.com",
+    "Password": "your-password"
   }
 }
 ```
@@ -80,37 +54,98 @@ public class YourService
 var config = new NPMConfiguration
 {
     BaseUrl = "http://your-npm-instance:81",
-    TimeoutSeconds = 30
+    TimeoutSeconds = 30,
+    Email = "admin@example.com",
+    Password = "your-password"
 };
 
 services.AddNginxProxyManager(config);
 ```
 
-## Available Services
+### Using Environment Variables
 
-- `IProxyService` - Manage proxy hosts
-- `ICertificateService` - Manage SSL certificates
-- `IAccessListService` - Manage access lists
-- `IRedirectionService` - Manage redirections
-- `IStreamService` - Manage stream configurations
-- `IServerErrorService` - Monitor server errors
-- `IAuditLogService` - Access audit logs
-- `IDeadHostService` - Manage dead hosts
-- `IReportService` - Generate and manage reports
+You can also configure the SDK using environment variables:
+
+```bash
+export NGINX_PROXY_MANAGER_BASE_URL="http://your-npm-instance:81"
+export NGINX_PROXY_MANAGER_EMAIL="admin@example.com"
+export NGINX_PROXY_MANAGER_PASSWORD="your-password"
+export NGINX_PROXY_MANAGER_TIMEOUT_SECONDS="30"
+```
+
+Then in your code:
+
+```csharp
+services.AddNginxProxyManager(); // Will use environment variables
+```
+
+## Available Resources
+
+The SDK provides access to all Nginx Proxy Manager resources through the client:
+
+```csharp
+// Create a client
+var client = new NginxProxyManagerClient("http://your-npm-instance:81", "admin@example.com", "your-password");
+
+// Access resources
+var proxyHosts = client.ProxyHosts;
+var streams = client.Streams;
+var certificates = client.Certificates;
+var accessLists = client.AccessLists;
+var serverErrors = client.ServerErrors;
+var auditLogs = client.AuditLogs;
+var reports = client.Reports;
+var deadHosts = client.DeadHosts;
+```
+
+## Builder Pattern
+
+The SDK uses a fluent builder pattern for creating requests:
+
+```csharp
+// Create a proxy host using the builder pattern
+var proxy = await client.ProxyHosts.CreateBuilder()
+    .WithDomainNames("example.com")
+    .WithForwardHost("192.168.1.100")
+    .WithForwardPort(8080)
+    .WithSsl(true)
+    .Build();
+
+var result = await client.ProxyHosts.CreateAsync(proxy);
+```
+
+## Error Handling
+
+The SDK uses the `OperationResult<T>` pattern for error handling:
+
+```csharp
+var result = await client.ProxyHosts.CreateAsync(proxy);
+if (result.IsSuccess)
+{
+    // Use the created item
+    var item = result.Data;
+}
+else
+{
+    // Handle the error
+    var error = result.Error;
+    Console.WriteLine($"Error: {error.Message}");
+    Console.WriteLine($"Details: {error.Details}");
+}
+```
 
 ## Documentation
 
-Detailed documentation for each service is available in the `docs` directory:
+For detailed documentation on each resource, see:
 
-- [Proxy Service Documentation](docs/proxy-service.md)
-- [Certificate Service Documentation](docs/certificate-service.md)
-- [Access List Service Documentation](docs/access-list-service.md)
-- [Redirection Service Documentation](docs/redirection-service.md)
-- [Stream Service Documentation](docs/stream-service.md)
-- [Server Error Service Documentation](docs/server-error-service.md)
-- [Audit Log Service Documentation](docs/audit-log-service.md)
-- [Dead Host Service Documentation](docs/dead-host-service.md)
-- [Report Service Documentation](docs/report-service.md)
+- [Proxies](docs/proxies.md) - Manage proxy hosts
+- [Streams](docs/streams.md) - Manage TCP/UDP streams
+- [Server Errors](docs/server-errors.md) - View and manage server errors
+- [Certificates](docs/certificates.md) - Manage SSL certificates
+- [Access Lists](docs/access-lists.md) - Manage access lists
+- [Audit Logs](docs/audit-logs.md) - View audit logs
+- [Reports](docs/reports.md) - Generate reports
+- [Dead Hosts](docs/dead-hosts.md) - Manage dead hosts
 
 ## Contributing
 
@@ -118,4 +153,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
+This project is licensed under the MIT License - see the LICENSE file for details. 

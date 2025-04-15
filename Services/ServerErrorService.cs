@@ -1,61 +1,63 @@
-using System;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using NginxProxyManager.SDK.Common;
 using NginxProxyManager.SDK.Models.ServerErrors;
 using NginxProxyManager.SDK.Services.Interfaces;
 
 namespace NginxProxyManager.SDK.Services
 {
-    public class ServerErrorService : IServerErrorService
+    /// <summary>
+    /// Service for interacting with the server errors API
+    /// </summary>
+    public class ServerErrorService : NPMServiceBase, IServerErrorService
     {
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _jsonOptions;
-
-        public ServerErrorService(HttpClient httpClient)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServerErrorService"/> class.
+        /// </summary>
+        /// <param name="httpClient">The HTTP client</param>
+        public ServerErrorService(HttpClient httpClient) : base(httpClient, "api/server-errors")
         {
-            _httpClient = httpClient;
-            _jsonOptions = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
         }
 
-        public async Task<ServerError[]> GetServerErrorsAsync(CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public async Task<OperationResult<ServerError[]>> GetServerErrorsAsync(CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.GetAsync("api/server-errors", cancellationToken);
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync(cancellationToken);
-            return JsonSerializer.Deserialize<ServerError[]>(content, _jsonOptions);
+            using var request = CreateRequest(HttpMethod.Get, "");
+            var result = await SendAsync<ServerError[]>(request, cancellationToken);
+            return new OperationResult<ServerError[]>(result);
         }
 
-        public async Task<ServerError> GetServerErrorAsync(int serverErrorId, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public async Task<OperationResult<ServerError>> GetServerErrorAsync(int serverErrorId, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.GetAsync($"api/server-errors/{serverErrorId}", cancellationToken);
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync(cancellationToken);
-            return JsonSerializer.Deserialize<ServerError>(content, _jsonOptions);
+            using var request = CreateRequest(HttpMethod.Get, serverErrorId.ToString());
+            var result = await SendAsync<ServerError>(request, cancellationToken);
+            return new OperationResult<ServerError>(result);
         }
 
-        public async Task<ServerError[]> GetServerErrorsByHostIdAsync(int hostId, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public async Task<OperationResult<ServerError[]>> GetServerErrorsByHostIdAsync(int hostId, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.GetAsync($"api/server-errors/host/{hostId}", cancellationToken);
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync(cancellationToken);
-            return JsonSerializer.Deserialize<ServerError[]>(content, _jsonOptions);
+            using var request = CreateRequest(HttpMethod.Get, $"host/{hostId}");
+            var result = await SendAsync<ServerError[]>(request, cancellationToken);
+            return new OperationResult<ServerError[]>(result);
         }
 
-        public async Task DeleteServerErrorAsync(int serverErrorId, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public async Task<OperationResult<object>> DeleteServerErrorAsync(int serverErrorId, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.DeleteAsync($"api/server-errors/{serverErrorId}", cancellationToken);
-            response.EnsureSuccessStatusCode();
+            using var request = CreateRequest(HttpMethod.Delete, serverErrorId.ToString());
+            await SendAsync<object>(request, cancellationToken);
+            return new OperationResult<object>(null);
         }
 
-        public async Task DeleteServerErrorsByHostIdAsync(int hostId, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public async Task<OperationResult<object>> DeleteServerErrorsByHostIdAsync(int hostId, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.DeleteAsync($"api/server-errors/host/{hostId}", cancellationToken);
-            response.EnsureSuccessStatusCode();
+            using var request = CreateRequest(HttpMethod.Delete, $"host/{hostId}");
+            await SendAsync<object>(request, cancellationToken);
+            return new OperationResult<object>(null);
         }
     }
 } 

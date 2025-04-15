@@ -1,13 +1,22 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace NginxProxyManager.SDK.Models.AccessLists
 {
+    /// <summary>
+    /// Access list directive type
+    /// </summary>
     public enum AccessListDirective
     {
-        [EnumMember(Value = "allow")]
-        Allow = 0,
+        /// <summary>
+        /// Allow access
+        /// </summary>
+        [JsonPropertyName("allow")]
+        Allow,
 
-        [EnumMember(Value = "deny")]
-        Deny = 1
+        /// <summary>
+        /// Deny access
+        /// </summary>
+        [JsonPropertyName("deny")]
+        Deny
     }
 } 
