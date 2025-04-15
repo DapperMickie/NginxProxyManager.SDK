@@ -5,8 +5,14 @@ The Audit Logs resource provides a complete API for managing and retrieving audi
 ## Quick Start
 
 ```csharp
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Create credentials
+var credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+
 // Create a client
-var client = new NginxProxyManagerClient("http://your-npm-instance:81", "admin@example.com", "your-password");
+var client = new NginxProxyManagerClient("http://your-npm-instance:81", credentials);
 
 // Get recent audit logs
 var result = await client.AuditLogs.GetRecentAsync();
@@ -15,6 +21,43 @@ if (result.IsSuccess)
     foreach (var log in result.Data)
     {
         Console.WriteLine($"Audit Log: {log.Action} by {log.User} at {log.Timestamp}");
+    }
+}
+```
+
+## Using Dependency Injection
+
+```csharp
+// In your Program.cs or Startup.cs
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Configure services
+builder.Services.AddNginxProxyManager(options =>
+{
+    options.BaseUrl = "http://your-npm-instance:81";
+    options.Credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+});
+
+// In your controller or service
+public class AuditLogController : ControllerBase
+{
+    private readonly INginxProxyManagerClient _client;
+
+    public AuditLogController(INginxProxyManagerClient client)
+    {
+        _client = client;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var result = await _client.AuditLogs.GetRecentAsync();
+        if (result.IsSuccess)
+        {
+            return View(result.Data);
+        }
+        
+        return BadRequest(result.Error);
     }
 }
 ```

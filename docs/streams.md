@@ -5,8 +5,14 @@ The Streams resource provides a complete API for managing TCP/UDP streams in Ngi
 ## Quick Start
 
 ```csharp
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Create credentials
+var credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+
 // Create a client
-var client = new NginxProxyManagerClient("http://your-npm-instance:81", "admin@example.com", "your-password");
+var client = new NginxProxyManagerClient("http://your-npm-instance:81", credentials);
 
 // List all streams
 var result = await client.Streams.GetAllAsync();
@@ -19,20 +25,57 @@ if (result.IsSuccess)
 }
 ```
 
+## Using Dependency Injection
+
+```csharp
+// In your Program.cs or Startup.cs
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Configure services
+builder.Services.AddNginxProxyManager(options =>
+{
+    options.BaseUrl = "http://your-npm-instance:81";
+    options.Credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+});
+
+// In your controller or service
+public class StreamController : ControllerBase
+{
+    private readonly INginxProxyManagerClient _client;
+
+    public StreamController(INginxProxyManagerClient client)
+    {
+        _client = client;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var result = await _client.Streams.GetAllAsync();
+        if (result.IsSuccess)
+        {
+            return View(result.Data);
+        }
+        
+        return BadRequest(result.Error);
+    }
+}
+```
+
 ## Creating a Stream
 
 ### Basic TCP Stream
 
 ```csharp
 // Create a basic TCP stream
-var stream = await client.Streams.CreateBuilder()
+var result = await client.Streams.CreateBuilder()
     .WithIncomingPort(3306)
     .WithForwardHost("192.168.1.100")
     .WithForwardPort(3306)
     .WithTcpForwarding(true)
-    .Build();
+    .Build()
+    .CreateAsync();
 
-var result = await client.Streams.CreateAsync(stream);
 if (result.IsSuccess)
 {
     Console.WriteLine($"Created TCP stream with ID: {result.Data.Id}");
@@ -43,14 +86,14 @@ if (result.IsSuccess)
 
 ```csharp
 // Create a UDP stream
-var stream = await client.Streams.CreateBuilder()
+var result = await client.Streams.CreateBuilder()
     .WithIncomingPort(53)
     .WithForwardHost("192.168.1.100")
     .WithForwardPort(53)
     .WithUdpForwarding(true)
-    .Build();
+    .Build()
+    .CreateAsync();
 
-var result = await client.Streams.CreateAsync(stream);
 if (result.IsSuccess)
 {
     Console.WriteLine($"Created UDP stream with ID: {result.Data.Id}");
@@ -61,15 +104,15 @@ if (result.IsSuccess)
 
 ```csharp
 // Create a TCP and UDP stream
-var stream = await client.Streams.CreateBuilder()
+var result = await client.Streams.CreateBuilder()
     .WithIncomingPort(53)
     .WithForwardHost("192.168.1.100")
     .WithForwardPort(53)
     .WithTcpForwarding(true)
     .WithUdpForwarding(true)
-    .Build();
+    .Build()
+    .CreateAsync();
 
-var result = await client.Streams.CreateAsync(stream);
 if (result.IsSuccess)
 {
     Console.WriteLine($"Created TCP/UDP stream with ID: {result.Data.Id}");
@@ -105,21 +148,17 @@ if (result.IsSuccess)
 ## Updating a Stream
 
 ```csharp
-// Get the stream
-var getResult = await client.Streams.GetByIdAsync(1);
-if (getResult.IsSuccess)
+// Update the stream
+var result = await client.Streams.CreateBuilder()
+    .WithId(1)
+    .WithForwardPort(3307)
+    .WithEnabled(false)
+    .Build()
+    .UpdateAsync();
+
+if (result.IsSuccess)
 {
-    var stream = getResult.Data;
-    
-    // Update the stream
-    stream.ForwardPort = 3307;
-    stream.Enabled = false;
-    
-    var updateResult = await client.Streams.UpdateAsync(stream);
-    if (updateResult.IsSuccess)
-    {
-        Console.WriteLine("Stream updated successfully");
-    }
+    Console.WriteLine("Stream updated successfully");
 }
 ```
 
@@ -180,7 +219,7 @@ else
 ### Create a Stream with All Options
 
 ```csharp
-var stream = await client.Streams.CreateBuilder()
+var result = await client.Streams.CreateBuilder()
     .WithIncomingPort(3306)
     .WithForwardHost("192.168.1.100")
     .WithForwardPort(3306)
@@ -193,9 +232,9 @@ var stream = await client.Streams.CreateBuilder()
         { "description", "MySQL database stream" },
         { "environment", "production" }
     })
-    .Build();
+    .Build()
+    .CreateAsync();
 
-var result = await client.Streams.CreateAsync(stream);
 if (result.IsSuccess)
 {
     Console.WriteLine($"Created stream with ID: {result.Data.Id}");
@@ -206,25 +245,22 @@ if (result.IsSuccess)
 
 ```csharp
 // Create multiple streams
-var streams = new[]
+var ports = new[]
 {
-    await client.Streams.CreateBuilder()
-        .WithIncomingPort(3306)
-        .WithForwardHost("192.168.1.101")
-        .WithForwardPort(3306)
-        .WithTcpForwarding(true)
-        .Build(),
-    await client.Streams.CreateBuilder()
-        .WithIncomingPort(53)
-        .WithForwardHost("192.168.1.102")
-        .WithForwardPort(53)
-        .WithUdpForwarding(true)
-        .Build()
+    3306,
+    53
 };
 
-foreach (var stream in streams)
+foreach (var port in ports)
 {
-    var result = await client.Streams.CreateAsync(stream);
+    var result = await client.Streams.CreateBuilder()
+        .WithIncomingPort(port)
+        .WithForwardHost("192.168.1.100")
+        .WithForwardPort(port)
+        .WithTcpForwarding(true)
+        .Build()
+        .CreateAsync();
+        
     if (result.IsSuccess)
     {
         Console.WriteLine($"Created stream with ID: {result.Data.Id}");

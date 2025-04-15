@@ -5,8 +5,14 @@ The Reports resource provides functionality for generating and managing reports 
 ## Quick Start
 
 ```csharp
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Create credentials
+var credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+
 // Create a client
-var client = new NginxProxyManagerClient("http://your-npm-instance:81", "admin@example.com", "your-password");
+var client = new NginxProxyManagerClient("http://your-npm-instance:81", credentials);
 
 // Generate a report
 var result = await client.Reports.GenerateAsync();
@@ -15,6 +21,43 @@ if (result.IsSuccess)
     var report = result.Data;
     Console.WriteLine($"Report generated: {report.Title}");
     Console.WriteLine($"Generated at: {report.GeneratedAt}");
+}
+```
+
+## Using Dependency Injection
+
+```csharp
+// In your Program.cs or Startup.cs
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Configure services
+builder.Services.AddNginxProxyManager(options =>
+{
+    options.BaseUrl = "http://your-npm-instance:81";
+    options.Credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+});
+
+// In your controller or service
+public class ReportController : ControllerBase
+{
+    private readonly INginxProxyManagerClient _client;
+
+    public ReportController(INginxProxyManagerClient client)
+    {
+        _client = client;
+    }
+
+    public async Task<IActionResult> GenerateReport()
+    {
+        var result = await _client.Reports.GenerateAsync();
+        if (result.IsSuccess)
+        {
+            return View(result.Data);
+        }
+        
+        return BadRequest(result.Error);
+    }
 }
 ```
 

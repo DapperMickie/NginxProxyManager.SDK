@@ -5,8 +5,14 @@ The Access Lists resource provides a complete API for managing access lists in N
 ## Quick Start
 
 ```csharp
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Create credentials
+var credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+
 // Create a client
-var client = new NginxProxyManagerClient("http://your-npm-instance:81", "admin@example.com", "your-password");
+var client = new NginxProxyManagerClient("http://your-npm-instance:81", credentials);
 
 // List all access lists
 var result = await client.AccessLists.GetAllAsync();
@@ -15,6 +21,43 @@ if (result.IsSuccess)
     foreach (var list in result.Data)
     {
         Console.WriteLine($"Access List: {list.Name} ({list.Rules.Count} rules)");
+    }
+}
+```
+
+## Using Dependency Injection
+
+```csharp
+// In your Program.cs or Startup.cs
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Configure services
+builder.Services.AddNginxProxyManager(options =>
+{
+    options.BaseUrl = "http://your-npm-instance:81";
+    options.Credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+});
+
+// In your controller or service
+public class AccessListController : ControllerBase
+{
+    private readonly INginxProxyManagerClient _client;
+
+    public AccessListController(INginxProxyManagerClient client)
+    {
+        _client = client;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var result = await _client.AccessLists.GetAllAsync();
+        if (result.IsSuccess)
+        {
+            return View(result.Data);
+        }
+        
+        return BadRequest(result.Error);
     }
 }
 ```

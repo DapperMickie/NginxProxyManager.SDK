@@ -1,12 +1,18 @@
 # Certificates
 
-The Certificates resource provides a complete API for managing SSL certificates in Nginx Proxy Manager. This includes creating, reading, updating, and deleting certificates, as well as managing their domains and metadata.
+The Certificates resource provides a complete API for managing SSL certificates in Nginx Proxy Manager. This includes creating, retrieving, updating, and deleting certificates, as well as managing certificate renewals.
 
 ## Quick Start
 
 ```csharp
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Create credentials
+var credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+
 // Create a client
-var client = new NginxProxyManagerClient("http://your-npm-instance:81", "admin@example.com", "your-password");
+var client = new NginxProxyManagerClient("http://your-npm-instance:81", credentials);
 
 // List all certificates
 var result = await client.Certificates.GetAllAsync();
@@ -14,62 +20,80 @@ if (result.IsSuccess)
 {
     foreach (var cert in result.Data)
     {
-        Console.WriteLine($"Certificate: {cert.DomainNames[0]} (Expires: {cert.ExpiresOn})");
+        Console.WriteLine($"Certificate: {cert.DomainNames}");
     }
 }
 ```
 
-## Creating a Certificate
-
-### Basic Certificate
+## Using Dependency Injection
 
 ```csharp
-// Create a basic certificate
-var cert = await client.Certificates.CreateBuilder()
-    .WithDomainNames("example.com")
-    .WithEmail("admin@example.com")
-    .WithProvider("letsencrypt")
-    .Build();
+// In your Program.cs or Startup.cs
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
 
-var result = await client.Certificates.CreateAsync(cert);
-if (result.IsSuccess)
+// Configure services
+builder.Services.AddNginxProxyManager(options =>
 {
-    Console.WriteLine($"Created certificate with ID: {result.Data.Id}");
+    options.BaseUrl = "http://your-npm-instance:81";
+    options.Credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+});
+
+// In your controller or service
+public class CertificateController : ControllerBase
+{
+    private readonly INginxProxyManagerClient _client;
+
+    public CertificateController(INginxProxyManagerClient client)
+    {
+        _client = client;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var result = await _client.Certificates.GetAllAsync();
+        if (result.IsSuccess)
+        {
+            return View(result.Data);
+        }
+        
+        return BadRequest(result.Error);
+    }
 }
 ```
 
-### Certificate with Multiple Domains
+## Creating Certificates
+
+### Create a Let's Encrypt Certificate
 
 ```csharp
-// Create a certificate with multiple domains
-var cert = await client.Certificates.CreateBuilder()
-    .WithDomainNames("example.com", "www.example.com", "api.example.com")
+var result = await client.Certificates.CreateBuilder()
+    .WithDomainNames("example.com", "www.example.com")
     .WithEmail("admin@example.com")
     .WithProvider("letsencrypt")
-    .Build();
+    .Build()
+    .CreateAsync();
 
-var result = await client.Certificates.CreateAsync(cert);
 if (result.IsSuccess)
 {
-    Console.WriteLine($"Created certificate with ID: {result.Data.Id}");
+    Console.WriteLine($"Certificate created: {result.Data.DomainNames}");
 }
 ```
 
-### Custom Certificate
+### Create a Custom Certificate
 
 ```csharp
-// Create a custom certificate
-var cert = await client.Certificates.CreateBuilder()
+var result = await client.Certificates.CreateBuilder()
     .WithDomainNames("example.com")
     .WithProvider("custom")
-    .WithCertificate("-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----")
-    .WithKey("-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----")
-    .Build();
+    .WithCertificate("-----BEGIN CERTIFICATE-----...")
+    .WithKey("-----BEGIN PRIVATE KEY-----...")
+    .Build()
+    .CreateAsync();
 
-var result = await client.Certificates.CreateAsync(cert);
 if (result.IsSuccess)
 {
-    Console.WriteLine($"Created custom certificate with ID: {result.Data.Id}");
+    Console.WriteLine($"Certificate created: {result.Data.DomainNames}");
 }
 ```
 
@@ -83,7 +107,7 @@ if (result.IsSuccess)
 {
     foreach (var cert in result.Data)
     {
-        Console.WriteLine($"Certificate: {cert.DomainNames[0]} (Expires: {cert.ExpiresOn})");
+        Console.WriteLine($"Certificate: {cert.DomainNames}");
     }
 }
 ```
@@ -95,44 +119,40 @@ var result = await client.Certificates.GetByIdAsync(1);
 if (result.IsSuccess)
 {
     var cert = result.Data;
-    Console.WriteLine($"Certificate: {cert.DomainNames[0]} (Expires: {cert.ExpiresOn})");
+    Console.WriteLine($"Certificate: {cert.DomainNames}");
 }
 ```
 
-### Get Certificates by Domain
+## Updating Certificates
+
+### Update Certificate
 
 ```csharp
-var result = await client.Certificates.GetByDomainAsync("example.com");
+var result = await client.Certificates.CreateBuilder()
+    .WithId(1)
+    .WithDomainNames("example.com", "www.example.com", "api.example.com")
+    .Build()
+    .UpdateAsync();
+
 if (result.IsSuccess)
 {
-    foreach (var cert in result.Data)
-    {
-        Console.WriteLine($"Certificate: {cert.DomainNames[0]} (Expires: {cert.ExpiresOn})");
-    }
+    Console.WriteLine($"Certificate updated: {result.Data.DomainNames}");
 }
 ```
 
-## Updating a Certificate
+### Renew Certificate
 
 ```csharp
-// Get the certificate
-var getResult = await client.Certificates.GetByIdAsync(1);
-if (getResult.IsSuccess)
+var result = await client.Certificates.RenewAsync(1);
+if (result.IsSuccess)
 {
-    var cert = getResult.Data;
-    
-    // Update the certificate
-    cert.DomainNames.Add("new.example.com");
-    
-    var updateResult = await client.Certificates.UpdateAsync(cert);
-    if (updateResult.IsSuccess)
-    {
-        Console.WriteLine("Certificate updated successfully");
-    }
+    Console.WriteLine("Certificate renewed successfully");
 }
 ```
 
-## Deleting a Certificate
+## Deleting Certificates
+
+### Delete Certificate
 
 ```csharp
 var result = await client.Certificates.DeleteAsync(1);
@@ -142,58 +162,16 @@ if (result.IsSuccess)
 }
 ```
 
-## Managing Certificate Domains
-
-### Add a Domain
-
-```csharp
-// Get the certificate
-var getResult = await client.Certificates.GetByIdAsync(1);
-if (getResult.IsSuccess)
-{
-    var cert = getResult.Data;
-    
-    // Add a domain
-    cert.DomainNames.Add("new.example.com");
-    
-    var updateResult = await client.Certificates.UpdateAsync(cert);
-    if (updateResult.IsSuccess)
-    {
-        Console.WriteLine("Domain added successfully");
-    }
-}
-```
-
-### Remove a Domain
-
-```csharp
-// Get the certificate
-var getResult = await client.Certificates.GetByIdAsync(1);
-if (getResult.IsSuccess)
-{
-    var cert = getResult.Data;
-    
-    // Remove a domain
-    cert.DomainNames.Remove("old.example.com");
-    
-    var updateResult = await client.Certificates.UpdateAsync(cert);
-    if (updateResult.IsSuccess)
-    {
-        Console.WriteLine("Domain removed successfully");
-    }
-}
-```
-
 ## Error Handling
 
 All operations return an `OperationResult<T>` that contains the result of the operation and any error information:
 
 ```csharp
-var result = await client.Certificates.CreateAsync(cert);
+var result = await client.Certificates.GetAllAsync();
 if (result.IsSuccess)
 {
-    // Use the created item
-    var item = result.Data;
+    // Use the certificates
+    var certificates = result.Data;
 }
 else
 {
@@ -206,30 +184,53 @@ else
 
 ## Advanced Examples
 
-### Create a Certificate with All Options
+### Create and Apply Certificate
 
 ```csharp
-var cert = await client.Certificates.CreateBuilder()
-    .WithDomainNames("example.com", "www.example.com", "api.example.com")
+// Create certificate
+var createResult = await client.Certificates.CreateBuilder()
+    .WithDomainNames("example.com")
     .WithEmail("admin@example.com")
     .WithProvider("letsencrypt")
-    .WithDnsProvider("cloudflare")
-    .WithDnsProviderCredentials(new Dictionary<string, string>
-    {
-        { "CF_API_EMAIL", "admin@example.com" },
-        { "CF_API_KEY", "your-api-key" }
-    })
-    .WithMeta(new Dictionary<string, string>
-    {
-        { "description", "Example certificate" },
-        { "environment", "production" }
-    })
-    .Build();
+    .Build()
+    .CreateAsync();
 
-var result = await client.Certificates.CreateAsync(cert);
+if (createResult.IsSuccess)
+{
+    var cert = createResult.Data;
+    
+    // Apply to proxy host
+    var proxyResult = await client.ProxyHosts.CreateBuilder()
+        .WithDomainNames("example.com")
+        .WithForwardingHost("192.168.1.100")
+        .WithForwardingPort(80)
+        .WithCertificateId(cert.Id)
+        .Build()
+        .CreateAsync();
+        
+    if (proxyResult.IsSuccess)
+    {
+        Console.WriteLine("Certificate created and applied successfully");
+    }
+}
+```
+
+### Monitor Certificate Expiration
+
+```csharp
+var result = await client.Certificates.GetAllAsync();
 if (result.IsSuccess)
 {
-    Console.WriteLine($"Created certificate with ID: {result.Data.Id}");
+    foreach (var cert in result.Data)
+    {
+        var daysUntilExpiration = (cert.ExpiresAt - DateTime.UtcNow).TotalDays;
+        Console.WriteLine($"Certificate {cert.DomainNames} expires in {daysUntilExpiration} days");
+        
+        if (daysUntilExpiration < 30)
+        {
+            Console.WriteLine("Certificate needs renewal soon!");
+        }
+    }
 }
 ```
 
@@ -237,30 +238,29 @@ if (result.IsSuccess)
 
 ```csharp
 // Create multiple certificates
-var certificates = new[]
+var domains = new[]
 {
-    await client.Certificates.CreateBuilder()
-        .WithDomainNames("site1.example.com")
-        .WithEmail("admin@example.com")
-        .WithProvider("letsencrypt")
-        .Build(),
-    await client.Certificates.CreateBuilder()
-        .WithDomainNames("site2.example.com")
+    "example1.com",
+    "example2.com",
+    "example3.com"
+};
+
+foreach (var domain in domains)
+{
+    var result = await client.Certificates.CreateBuilder()
+        .WithDomainNames(domain)
         .WithEmail("admin@example.com")
         .WithProvider("letsencrypt")
         .Build()
-};
-
-foreach (var cert in certificates)
-{
-    var result = await client.Certificates.CreateAsync(cert);
+        .CreateAsync();
+        
     if (result.IsSuccess)
     {
-        Console.WriteLine($"Created certificate with ID: {result.Data.Id}");
+        Console.WriteLine($"Certificate created for {domain}");
     }
     else
     {
-        Console.WriteLine($"Failed to create certificate: {result.Error.Message}");
+        Console.WriteLine($"Failed to create certificate for {domain}: {result.Error.Message}");
     }
 }
 ``` 

@@ -20,6 +20,8 @@ The SDK provides the following resources:
 - [Streams](streams.md) - Manage TCP/UDP streams
 - [Audit Logs](audit-logs.md) - Access audit logs
 - [Server Errors](server-errors.md) - Handle server errors
+- [Reports](reports.md) - Generate reports
+- [Dead Hosts](dead-hosts.md) - Manage dead hosts
 
 ## Installation
 
@@ -29,11 +31,17 @@ dotnet add package NginxProxyManager.SDK
 
 ## Basic Usage
 
+### Direct Client Instantiation
+
 ```csharp
 using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Create credentials
+var credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
 
 // Create a client
-var client = new NginxProxyManagerClient("http://your-npm-instance:81", "admin@example.com", "your-password");
+var client = new NginxProxyManagerClient("http://your-npm-instance:81", credentials);
 
 // Use resources
 var result = await client.ProxyHosts.GetAllAsync();
@@ -42,6 +50,43 @@ if (result.IsSuccess)
     foreach (var host in result.Data)
     {
         Console.WriteLine($"Proxy Host: {host.DomainNames[0]} -> {host.ForwardHost}:{host.ForwardPort}");
+    }
+}
+```
+
+### Using Dependency Injection
+
+```csharp
+// In your Program.cs or Startup.cs
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Configure services
+builder.Services.AddNginxProxyManager(options =>
+{
+    options.BaseUrl = "http://your-npm-instance:81";
+    options.Credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+});
+
+// In your controller or service
+public class MyController : ControllerBase
+{
+    private readonly INginxProxyManagerClient _client;
+
+    public MyController(INginxProxyManagerClient client)
+    {
+        _client = client;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var result = await _client.ProxyHosts.GetAllAsync();
+        if (result.IsSuccess)
+        {
+            return View(result.Data);
+        }
+        
+        return BadRequest(result.Error);
     }
 }
 ```

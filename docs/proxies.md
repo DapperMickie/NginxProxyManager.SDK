@@ -5,8 +5,14 @@ The Proxies resource provides a complete API for managing proxy hosts in Nginx P
 ## Quick Start
 
 ```csharp
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Create credentials
+var credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+
 // Create a client
-var client = new NginxProxyManagerClient("http://your-npm-instance:81", "admin@example.com", "your-password");
+var client = new NginxProxyManagerClient("http://your-npm-instance:81", credentials);
 
 // List all proxy hosts
 var result = await client.ProxyHosts.GetAllAsync();
@@ -19,19 +25,56 @@ if (result.IsSuccess)
 }
 ```
 
+## Using Dependency Injection
+
+```csharp
+// In your Program.cs or Startup.cs
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Configure services
+builder.Services.AddNginxProxyManager(options =>
+{
+    options.BaseUrl = "http://your-npm-instance:81";
+    options.Credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+});
+
+// In your controller or service
+public class ProxyController : ControllerBase
+{
+    private readonly INginxProxyManagerClient _client;
+
+    public ProxyController(INginxProxyManagerClient client)
+    {
+        _client = client;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var result = await _client.ProxyHosts.GetAllAsync();
+        if (result.IsSuccess)
+        {
+            return View(result.Data);
+        }
+        
+        return BadRequest(result.Error);
+    }
+}
+```
+
 ## Creating a Proxy Host
 
 ### Basic Proxy Host
 
 ```csharp
 // Create a basic proxy host
-var proxy = await client.ProxyHosts.CreateBuilder()
+var result = await client.ProxyHosts.CreateBuilder()
     .WithDomainNames("example.com")
     .WithForwardHost("192.168.1.100")
     .WithForwardPort(8080)
-    .Build();
+    .Build()
+    .CreateAsync();
 
-var result = await client.ProxyHosts.CreateAsync(proxy);
 if (result.IsSuccess)
 {
     Console.WriteLine($"Created proxy host with ID: {result.Data.Id}");
@@ -42,7 +85,7 @@ if (result.IsSuccess)
 
 ```csharp
 // Create a proxy host with SSL
-var proxy = await client.ProxyHosts.CreateBuilder()
+var result = await client.ProxyHosts.CreateBuilder()
     .WithDomainNames("secure.example.com")
     .WithForwardHost("192.168.1.100")
     .WithForwardPort(8443)
@@ -52,9 +95,9 @@ var proxy = await client.ProxyHosts.CreateBuilder()
     .WithHstsIncludeSubdomains(true)
     .WithHstsPreload(true)
     .WithHstsMaxAge(31536000)
-    .Build();
+    .Build()
+    .CreateAsync();
 
-var result = await client.ProxyHosts.CreateAsync(proxy);
 if (result.IsSuccess)
 {
     Console.WriteLine($"Created secure proxy host with ID: {result.Data.Id}");
@@ -65,14 +108,14 @@ if (result.IsSuccess)
 
 ```csharp
 // Create a proxy host with access list
-var proxy = await client.ProxyHosts.CreateBuilder()
+var result = await client.ProxyHosts.CreateBuilder()
     .WithDomainNames("restricted.example.com")
     .WithForwardHost("192.168.1.100")
     .WithForwardPort(8080)
     .WithAccessListId(1) // ID of an existing access list
-    .Build();
+    .Build()
+    .CreateAsync();
 
-var result = await client.ProxyHosts.CreateAsync(proxy);
 if (result.IsSuccess)
 {
     Console.WriteLine($"Created restricted proxy host with ID: {result.Data.Id}");
@@ -121,21 +164,17 @@ if (result.IsSuccess)
 ## Updating a Proxy Host
 
 ```csharp
-// Get the proxy host
-var getResult = await client.ProxyHosts.GetByIdAsync(1);
-if (getResult.IsSuccess)
+// Update the proxy host
+var result = await client.ProxyHosts.CreateBuilder()
+    .WithId(1)
+    .WithForwardPort(9090)
+    .WithEnabled(false)
+    .Build()
+    .UpdateAsync();
+
+if (result.IsSuccess)
 {
-    var proxy = getResult.Data;
-    
-    // Update the proxy host
-    proxy.ForwardPort = 9090;
-    proxy.Enabled = false;
-    
-    var updateResult = await client.ProxyHosts.UpdateAsync(proxy);
-    if (updateResult.IsSuccess)
-    {
-        Console.WriteLine("Proxy host updated successfully");
-    }
+    Console.WriteLine("Proxy host updated successfully");
 }
 ```
 
@@ -154,42 +193,34 @@ if (result.IsSuccess)
 ### Assign an SSL Certificate
 
 ```csharp
-// Get the proxy host
-var getResult = await client.ProxyHosts.GetByIdAsync(1);
-if (getResult.IsSuccess)
+// Assign an SSL certificate
+var result = await client.ProxyHosts.CreateBuilder()
+    .WithId(1)
+    .WithSsl(true)
+    .WithCertificateId(1) // ID of an existing certificate
+    .Build()
+    .UpdateAsync();
+
+if (result.IsSuccess)
 {
-    var proxy = getResult.Data;
-    
-    // Assign an SSL certificate
-    proxy.Ssl = true;
-    proxy.CertificateId = 1; // ID of an existing certificate
-    
-    var updateResult = await client.ProxyHosts.UpdateAsync(proxy);
-    if (updateResult.IsSuccess)
-    {
-        Console.WriteLine("SSL certificate assigned successfully");
-    }
+    Console.WriteLine("SSL certificate assigned successfully");
 }
 ```
 
 ### Remove an SSL Certificate
 
 ```csharp
-// Get the proxy host
-var getResult = await client.ProxyHosts.GetByIdAsync(1);
-if (getResult.IsSuccess)
+// Remove the SSL certificate
+var result = await client.ProxyHosts.CreateBuilder()
+    .WithId(1)
+    .WithSsl(false)
+    .WithCertificateId(null)
+    .Build()
+    .UpdateAsync();
+
+if (result.IsSuccess)
 {
-    var proxy = getResult.Data;
-    
-    // Remove the SSL certificate
-    proxy.Ssl = false;
-    proxy.CertificateId = null;
-    
-    var updateResult = await client.ProxyHosts.UpdateAsync(proxy);
-    if (updateResult.IsSuccess)
-    {
-        Console.WriteLine("SSL certificate removed successfully");
-    }
+    Console.WriteLine("SSL certificate removed successfully");
 }
 ```
 
@@ -198,40 +229,32 @@ if (getResult.IsSuccess)
 ### Assign an Access List
 
 ```csharp
-// Get the proxy host
-var getResult = await client.ProxyHosts.GetByIdAsync(1);
-if (getResult.IsSuccess)
+// Assign an access list
+var result = await client.ProxyHosts.CreateBuilder()
+    .WithId(1)
+    .WithAccessListId(1) // ID of an existing access list
+    .Build()
+    .UpdateAsync();
+
+if (result.IsSuccess)
 {
-    var proxy = getResult.Data;
-    
-    // Assign an access list
-    proxy.AccessListId = 1; // ID of an existing access list
-    
-    var updateResult = await client.ProxyHosts.UpdateAsync(proxy);
-    if (updateResult.IsSuccess)
-    {
-        Console.WriteLine("Access list assigned successfully");
-    }
+    Console.WriteLine("Access list assigned successfully");
 }
 ```
 
 ### Remove an Access List
 
 ```csharp
-// Get the proxy host
-var getResult = await client.ProxyHosts.GetByIdAsync(1);
-if (getResult.IsSuccess)
+// Remove the access list
+var result = await client.ProxyHosts.CreateBuilder()
+    .WithId(1)
+    .WithAccessListId(null)
+    .Build()
+    .UpdateAsync();
+
+if (result.IsSuccess)
 {
-    var proxy = getResult.Data;
-    
-    // Remove the access list
-    proxy.AccessListId = null;
-    
-    var updateResult = await client.ProxyHosts.UpdateAsync(proxy);
-    if (updateResult.IsSuccess)
-    {
-        Console.WriteLine("Access list removed successfully");
-    }
+    Console.WriteLine("Access list removed successfully");
 }
 ```
 
@@ -260,7 +283,7 @@ else
 ### Create a Proxy Host with All Options
 
 ```csharp
-var proxy = await client.ProxyHosts.CreateBuilder()
+var result = await client.ProxyHosts.CreateBuilder()
     .WithDomainNames("example.com", "www.example.com")
     .WithForwardHost("192.168.1.100")
     .WithForwardPort(8080)
@@ -282,9 +305,9 @@ var proxy = await client.ProxyHosts.CreateBuilder()
         { "description", "Example proxy host" },
         { "environment", "production" }
     })
-    .Build();
+    .Build()
+    .CreateAsync();
 
-var result = await client.ProxyHosts.CreateAsync(proxy);
 if (result.IsSuccess)
 {
     Console.WriteLine($"Created proxy host with ID: {result.Data.Id}");
@@ -295,23 +318,21 @@ if (result.IsSuccess)
 
 ```csharp
 // Create multiple proxy hosts
-var proxies = new[]
+var domains = new[]
 {
-    await client.ProxyHosts.CreateBuilder()
-        .WithDomainNames("site1.example.com")
-        .WithForwardHost("192.168.1.101")
-        .WithForwardPort(8080)
-        .Build(),
-    await client.ProxyHosts.CreateBuilder()
-        .WithDomainNames("site2.example.com")
-        .WithForwardHost("192.168.1.102")
-        .WithForwardPort(8080)
-        .Build()
+    "site1.example.com",
+    "site2.example.com"
 };
 
-foreach (var proxy in proxies)
+foreach (var domain in domains)
 {
-    var result = await client.ProxyHosts.CreateAsync(proxy);
+    var result = await client.ProxyHosts.CreateBuilder()
+        .WithDomainNames(domain)
+        .WithForwardHost("192.168.1.100")
+        .WithForwardPort(8080)
+        .Build()
+        .CreateAsync();
+        
     if (result.IsSuccess)
     {
         Console.WriteLine($"Created proxy host with ID: {result.Data.Id}");

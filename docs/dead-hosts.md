@@ -5,8 +5,14 @@ The Dead Hosts resource provides functionality for managing and monitoring dead 
 ## Quick Start
 
 ```csharp
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Create credentials
+var credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+
 // Create a client
-var client = new NginxProxyManagerClient("http://your-npm-instance:81", "admin@example.com", "your-password");
+var client = new NginxProxyManagerClient("http://your-npm-instance:81", credentials);
 
 // Get all dead hosts
 var result = await client.DeadHosts.GetAllAsync();
@@ -17,6 +23,43 @@ if (result.IsSuccess)
         Console.WriteLine($"Dead Host: {host.DomainNames[0]} -> {host.ForwardHost}:{host.ForwardPort}");
         Console.WriteLine($"Last Check: {host.LastCheck}");
         Console.WriteLine($"Status: {host.Status}");
+    }
+}
+```
+
+## Using Dependency Injection
+
+```csharp
+// In your Program.cs or Startup.cs
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Configure services
+builder.Services.AddNginxProxyManager(options =>
+{
+    options.BaseUrl = "http://your-npm-instance:81";
+    options.Credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+});
+
+// In your controller or service
+public class DeadHostController : ControllerBase
+{
+    private readonly INginxProxyManagerClient _client;
+
+    public DeadHostController(INginxProxyManagerClient client)
+    {
+        _client = client;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var result = await _client.DeadHosts.GetAllAsync();
+        if (result.IsSuccess)
+        {
+            return View(result.Data);
+        }
+        
+        return BadRequest(result.Error);
     }
 }
 ```

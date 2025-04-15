@@ -9,6 +9,7 @@ A .NET SDK for interacting with the Nginx Proxy Manager API.
 - Comprehensive error handling with OperationResult pattern
 - Automatic token management and refresh
 - Full support for all Nginx Proxy Manager API endpoints
+- Dependency injection support for ASP.NET Core applications
 
 ## Installation
 
@@ -19,8 +20,14 @@ dotnet add package NginxProxyManager.SDK
 ## Quick Start
 
 ```csharp
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Create credentials
+var credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+
 // Create a client
-var client = new NginxProxyManagerClient("http://your-npm-instance:81", "admin@example.com", "your-password");
+var client = new NginxProxyManagerClient("http://your-npm-instance:81", credentials);
 
 // List all proxy hosts
 var result = await client.ProxyHosts.GetAllAsync();
@@ -34,6 +41,43 @@ if (result.IsSuccess)
 ```
 
 ## Configuration
+
+### Using Dependency Injection
+
+```csharp
+// In your Program.cs or Startup.cs
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Configure services
+builder.Services.AddNginxProxyManager(options =>
+{
+    options.BaseUrl = "http://your-npm-instance:81";
+    options.Credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+});
+
+// In your controller or service
+public class ProxyController : ControllerBase
+{
+    private readonly INginxProxyManagerClient _client;
+
+    public ProxyController(INginxProxyManagerClient client)
+    {
+        _client = client;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var result = await _client.ProxyHosts.GetAllAsync();
+        if (result.IsSuccess)
+        {
+            return View(result.Data);
+        }
+        
+        return BadRequest(result.Error);
+    }
+}
+```
 
 ### Using appsettings.json
 
@@ -85,7 +129,8 @@ The SDK provides access to all Nginx Proxy Manager resources through the client:
 
 ```csharp
 // Create a client
-var client = new NginxProxyManagerClient("http://your-npm-instance:81", "admin@example.com", "your-password");
+var credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+var client = new NginxProxyManagerClient("http://your-npm-instance:81", credentials);
 
 // Access resources
 var proxyHosts = client.ProxyHosts;
@@ -104,14 +149,18 @@ The SDK uses a fluent builder pattern for creating requests:
 
 ```csharp
 // Create a proxy host using the builder pattern
-var proxy = await client.ProxyHosts.CreateBuilder()
+var result = await client.ProxyHosts.CreateBuilder()
     .WithDomainNames("example.com")
     .WithForwardHost("192.168.1.100")
     .WithForwardPort(8080)
     .WithSsl(true)
-    .Build();
+    .Build()
+    .CreateAsync();
 
-var result = await client.ProxyHosts.CreateAsync(proxy);
+if (result.IsSuccess)
+{
+    Console.WriteLine($"Created proxy host with ID: {result.Data.Id}");
+}
 ```
 
 ## Error Handling

@@ -29,9 +29,13 @@ Install-Package NginxProxyManager.SDK
 
 ```csharp
 using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Create credentials
+var credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
 
 // Create a client with your Nginx Proxy Manager instance URL and credentials
-var client = new NginxProxyManagerClient("http://your-npm-instance:81", "admin@example.com", "your-password");
+var client = new NginxProxyManagerClient("http://your-npm-instance:81", credentials);
 ```
 
 ### Using Resources
@@ -190,12 +194,15 @@ if (result.IsSuccess)
 You can register the client with dependency injection:
 
 ```csharp
-// In your Startup.cs or Program.cs
-services.AddNginxProxyManager(options =>
+// In your Program.cs or Startup.cs
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
+// Configure services
+builder.Services.AddNginxProxyManager(options =>
 {
     options.BaseUrl = "http://your-npm-instance:81";
-    options.Username = "admin@example.com";
-    options.Password = "your-password";
+    options.Credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
 });
 
 // In your controller or service
@@ -208,7 +215,16 @@ public class MyController : ControllerBase
         _client = client;
     }
 
-    // Use the client
+    public async Task<IActionResult> Index()
+    {
+        var result = await _client.ProxyHosts.GetAllAsync();
+        if (result.IsSuccess)
+        {
+            return View(result.Data);
+        }
+        
+        return BadRequest(result.Error);
+    }
 }
 ```
 
@@ -217,10 +233,14 @@ public class MyController : ControllerBase
 You can provide a custom HTTP client:
 
 ```csharp
+using NginxProxyManager.SDK;
+using NginxProxyManager.SDK.Common;
+
 var httpClient = new HttpClient();
 httpClient.DefaultRequestHeaders.Add("X-Custom-Header", "value");
 
-var client = new NginxProxyManagerClient(httpClient, "http://your-npm-instance:81", "admin@example.com", "your-password");
+var credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
+var client = new NginxProxyManagerClient(httpClient, "http://your-npm-instance:81", credentials);
 ```
 
 ## Error Handling

@@ -91,24 +91,6 @@ namespace NginxProxyManager.SDK.Client
             Streams = new StreamResource(streamService);
         }
 
-        /// <summary>
-        /// Creates a new proxy host builder
-        /// </summary>
-        /// <returns>A new proxy host builder</returns>
-        public IProxyHostBuilder CreateProxyHost()
-        {
-            return ProxyHosts.CreateBuilder();
-        }
-
-        /// <summary>
-        /// Creates a new dead host builder
-        /// </summary>
-        /// <returns>A new dead host builder</returns>
-        public IDeadHostBuilder CreateDeadHost()
-        {
-            return DeadHosts.CreateBuilder();
-        }
-
         /// <inheritdoc />
         public void Dispose()
         {
