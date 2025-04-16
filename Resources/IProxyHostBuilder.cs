@@ -62,18 +62,6 @@ namespace NginxProxyManager.SDK.Resources
         IProxyHostBuilder WithHstsDisabled();
 
         /// <summary>
-        /// Enables HSTS subdomains for the proxy host
-        /// </summary>
-        /// <returns>The builder instance for method chaining</returns>
-        IProxyHostBuilder WithHstsSubdomainsEnabled();
-
-        /// <summary>
-        /// Disables HSTS subdomains for the proxy host
-        /// </summary>
-        /// <returns>The builder instance for method chaining</returns>
-        IProxyHostBuilder WithHstsSubdomainsDisabled();
-
-        /// <summary>
         /// Enables HTTP/2 support for the proxy host
         /// </summary>
         /// <returns>The builder instance for method chaining</returns>

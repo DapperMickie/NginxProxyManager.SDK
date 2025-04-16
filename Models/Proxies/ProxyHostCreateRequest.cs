@@ -42,7 +42,7 @@ namespace NginxProxyManager.SDK.Models.Proxies
         /// <summary>
         /// Gets or sets whether SSL is enabled
         /// </summary>
-        [JsonPropertyName("ssl_enabled")]
+        [JsonPropertyName("ssl_forced")]
         public bool SslEnabled { get; set; }
 
         /// <summary>
@@ -52,21 +52,15 @@ namespace NginxProxyManager.SDK.Models.Proxies
         public bool HstsEnabled { get; set; }
 
         /// <summary>
-        /// Gets or sets whether HSTS subdomains are enabled
-        /// </summary>
-        [JsonPropertyName("hsts_subdomains_enabled")]
-        public bool HstsSubdomainsEnabled { get; set; }
-
-        /// <summary>
         /// Gets or sets whether HTTP/2 support is enabled
         /// </summary>
-        [JsonPropertyName("http2_support_enabled")]
+        [JsonPropertyName("http2_support")]
         public bool Http2SupportEnabled { get; set; }
 
         /// <summary>
         /// Gets or sets whether exploit blocking is enabled
         /// </summary>
-        [JsonPropertyName("block_exploits_enabled")]
+        [JsonPropertyName("block_exploits")]
         public bool BlockExploitsEnabled { get; set; }
 
         /// <summary>

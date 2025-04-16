@@ -81,20 +81,6 @@ namespace NginxProxyManager.SDK.Resources
         }
 
         /// <inheritdoc />
-        public IProxyHostBuilder WithHstsSubdomainsEnabled()
-        {
-            _request.HstsSubdomainsEnabled = true;
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IProxyHostBuilder WithHstsSubdomainsDisabled()
-        {
-            _request.HstsSubdomainsEnabled = false;
-            return this;
-        }
-
-        /// <inheritdoc />
         public IProxyHostBuilder WithHttp2SupportEnabled()
         {
             _request.Http2SupportEnabled = true;
