@@ -39,10 +39,10 @@ namespace NginxProxyManager.SDK.Models.Proxies
         public string ForwardScheme { get; set; }
 
         /// <summary>
-        /// Gets or sets whether SSL is enabled
+        /// Gets or sets whether SSL is forced
         /// </summary>
-        [JsonPropertyName("ssl_enabled")]
-        public bool SslEnabled { get; set; }
+        [JsonPropertyName("ssl_forced")]
+        public bool SslForced { get; set; }
 
         /// <summary>
         /// Gets or sets whether HSTS is enabled
@@ -51,22 +51,22 @@ namespace NginxProxyManager.SDK.Models.Proxies
         public bool HstsEnabled { get; set; }
 
         /// <summary>
-        /// Gets or sets whether HSTS subdomains are enabled
+        /// Gets or sets whether HSTS applies to subdomains
         /// </summary>
-        [JsonPropertyName("hsts_subdomains_enabled")]
-        public bool HstsSubdomainsEnabled { get; set; }
+        [JsonPropertyName("hsts_subdomains")]
+        public bool HstsSubdomains { get; set; }
 
         /// <summary>
         /// Gets or sets whether HTTP/2 support is enabled
         /// </summary>
-        [JsonPropertyName("http2_support_enabled")]
-        public bool Http2SupportEnabled { get; set; }
+        [JsonPropertyName("http2_support")]
+        public bool Http2Support { get; set; }
 
         /// <summary>
         /// Gets or sets whether exploit blocking is enabled
         /// </summary>
-        [JsonPropertyName("block_exploits_enabled")]
-        public bool BlockExploitsEnabled { get; set; }
+        [JsonPropertyName("block_exploits")]
+        public bool BlockExploits { get; set; }
 
         /// <summary>
         /// Gets or sets whether WebSockets upgrade is allowed
