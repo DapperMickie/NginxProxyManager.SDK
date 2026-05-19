@@ -8,7 +8,7 @@ A .NET SDK for interacting with the Nginx Proxy Manager API.
 - Fluent builder pattern for creating requests
 - Comprehensive error handling with OperationResult pattern
 - Automatic token management and refresh
-- Full support for all Nginx Proxy Manager API endpoints
+- Broad support for Nginx Proxy Manager host, certificate, access-list, stream, audit-log, report, and server-error endpoints
 - Dependency injection support for ASP.NET Core applications
 
 ## Installation
@@ -20,8 +20,7 @@ dotnet add package NginxProxyManager.SDK
 ## Quick Start
 
 ```csharp
-using NginxProxyManager.SDK;
-using NginxProxyManager.SDK.Common;
+using NginxProxyManager.SDK.Client;
 
 // Create credentials
 var credentials = AuthenticationCredentials.FromCredentials("admin@example.com", "your-password");
@@ -33,7 +32,7 @@ var client = new NginxProxyManagerClient("http://your-npm-instance:81", credenti
 var result = await client.ProxyHosts.GetAllAsync();
 if (result.IsSuccess)
 {
-    foreach (var proxy in result.Data)
+    foreach (var proxy in result.Result ?? Array.Empty<NginxProxyManager.SDK.Models.Proxies.ProxyHost>())
     {
         Console.WriteLine($"Proxy: {proxy.DomainNames[0]} -> {proxy.ForwardHost}:{proxy.ForwardPort}");
     }
@@ -46,8 +45,7 @@ if (result.IsSuccess)
 
 ```csharp
 // In your Program.cs or Startup.cs
-using NginxProxyManager.SDK;
-using NginxProxyManager.SDK.Common;
+using NginxProxyManager.SDK.Client;
 
 // Configure services
 builder.Services.AddNginxProxyManager(options =>
@@ -71,7 +69,7 @@ public class ProxyController : ControllerBase
         var result = await _client.ProxyHosts.GetAllAsync();
         if (result.IsSuccess)
         {
-            return View(result.Data);
+            return View(result.Result);
         }
         
         return BadRequest(result.Error);
@@ -125,7 +123,7 @@ services.AddNginxProxyManager(); // Will use environment variables
 
 ## Available Resources
 
-The SDK provides access to all Nginx Proxy Manager resources through the client:
+The SDK provides access to the main Nginx Proxy Manager resources through the client:
 
 ```csharp
 // Create a client
@@ -159,7 +157,7 @@ var result = await client.ProxyHosts.CreateBuilder()
 
 if (result.IsSuccess)
 {
-    Console.WriteLine($"Created proxy host with ID: {result.Data.Id}");
+    Console.WriteLine($"Created proxy host with ID: {result.Result?.Id}");
 }
 ```
 
@@ -172,14 +170,14 @@ var result = await client.ProxyHosts.CreateAsync(proxy);
 if (result.IsSuccess)
 {
     // Use the created item
-    var item = result.Data;
+    var item = result.Result;
 }
 else
 {
     // Handle the error
     var error = result.Error;
-    Console.WriteLine($"Error: {error.Message}");
-    Console.WriteLine($"Details: {error.Details}");
+    Console.WriteLine($"Error: {error?.Message}");
+    
 }
 ```
 
