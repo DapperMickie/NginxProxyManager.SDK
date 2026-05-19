@@ -18,14 +18,14 @@ namespace NginxProxyManager.SDK.Models.AccessLists
         [JsonPropertyName("username")]
         [Required]
         [MinLength(1)]
-        public string Username { get; set; }
+        public string Username { get; set; } = default!;
 
         /// <summary>
         /// Password for basic authentication (hashed)
         /// </summary>
         [JsonPropertyName("password")]
         [Required]
-        public string Password { get; set; }
+        public string Password { get; set; } = default!;
 
         /// <summary>
         /// Creation timestamp

@@ -11,12 +11,12 @@ namespace NginxProxyManager.SDK.Models.Auth
         /// Gets or sets the identity (email/username)
         /// </summary>
         [JsonPropertyName("identity")]
-        public string Identity { get; set; }
+        public string Identity { get; set; } = default!;
 
         /// <summary>
         /// Gets or sets the secret (password)
         /// </summary>
         [JsonPropertyName("secret")]
-        public string Secret { get; set; }
+        public string Secret { get; set; } = default!;
     }
 } 

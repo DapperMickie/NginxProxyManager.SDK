@@ -10,7 +10,7 @@ namespace NginxProxyManager.SDK.Models.Redirections
         /// </summary>
         [JsonPropertyName("domain_names")]
         [Required]
-        public string[] DomainNames { get; set; }
+        public string[] DomainNames { get; set; } = default!;
 
         /// <summary>
         /// Forward HTTP status code (300-308)
@@ -26,7 +26,7 @@ namespace NginxProxyManager.SDK.Models.Redirections
         [JsonPropertyName("forward_scheme")]
         [Required]
         [RegularExpression("^(auto|http|https)$")]
-        public string ForwardScheme { get; set; }
+        public string ForwardScheme { get; set; } = default!;
 
         /// <summary>
         /// Forward domain name
@@ -34,7 +34,7 @@ namespace NginxProxyManager.SDK.Models.Redirections
         [JsonPropertyName("forward_domain_name")]
         [Required]
         [RegularExpression("^(?:[^.*]+\\.?)+[^.]$")]
-        public string ForwardDomainName { get; set; }
+        public string ForwardDomainName { get; set; } = default!;
 
         /// <summary>
         /// Whether to preserve the path when redirecting
@@ -89,7 +89,7 @@ namespace NginxProxyManager.SDK.Models.Redirections
         /// </summary>
         [JsonPropertyName("advanced_config")]
         [Required]
-        public string AdvancedConfig { get; set; }
+        public string AdvancedConfig { get; set; } = default!;
 
         /// <summary>
         /// Whether the redirection host is enabled
@@ -103,6 +103,6 @@ namespace NginxProxyManager.SDK.Models.Redirections
         /// </summary>
         [JsonPropertyName("meta")]
         [Required]
-        public Dictionary<string, object> Meta { get; set; }
+        public Dictionary<string, object> Meta { get; set; } = default!;
     }
 } 

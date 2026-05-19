@@ -18,13 +18,13 @@ namespace NginxProxyManager.SDK.Models.Proxies
         /// Date and time of creation
         /// </summary>
         [JsonPropertyName("created_on")]
-        public string CreatedOn { get; set; }
+        public string CreatedOn { get; set; } = default!;
 
         /// <summary>
         /// Date and time of last update
         /// </summary>
         [JsonPropertyName("modified_on")]
-        public string ModifiedOn { get; set; }
+        public string ModifiedOn { get; set; } = default!;
 
         /// <summary>
         /// User ID of the owner
@@ -36,13 +36,13 @@ namespace NginxProxyManager.SDK.Models.Proxies
         /// Domain names for the proxy host
         /// </summary>
         [JsonPropertyName("domain_names")]
-        public string[] DomainNames { get; set; }
+        public string[] DomainNames { get; set; } = default!;
 
         /// <summary>
         /// Forward host
         /// </summary>
         [JsonPropertyName("forward_host")]
-        public string ForwardHost { get; set; }
+        public string ForwardHost { get; set; } = default!;
 
         /// <summary>
         /// Forward port
@@ -54,7 +54,7 @@ namespace NginxProxyManager.SDK.Models.Proxies
         /// Forward scheme (http, https)
         /// </summary>
         [JsonPropertyName("forward_scheme")]
-        public string ForwardScheme { get; set; }
+        public string ForwardScheme { get; set; } = default!;
 
         /// <summary>
         /// Whether the proxy host is enabled
@@ -96,30 +96,30 @@ namespace NginxProxyManager.SDK.Models.Proxies
         /// Advanced configuration
         /// </summary>
         [JsonPropertyName("advanced_config")]
-        public string AdvancedConfig { get; set; }
+        public string AdvancedConfig { get; set; } = default!;
 
         /// <summary>
         /// Additional metadata
         /// </summary>
         [JsonPropertyName("meta")]
-        public Dictionary<string, object> Meta { get; set; }
+        public Dictionary<string, object> Meta { get; set; } = default!;
 
         /// <summary>
         /// Associated certificate
         /// </summary>
         [JsonPropertyName("certificate")]
-        public CertificateModel Certificate { get; set; }
+        public CertificateModel Certificate { get; set; } = default!;
 
         /// <summary>
         /// Associated access list
         /// </summary>
         [JsonPropertyName("access_list")]
-        public AccessList AccessList { get; set; }
+        public AccessList AccessList { get; set; } = default!;
 
         /// <summary>
         /// Owner user information
         /// </summary>
         [JsonPropertyName("owner")]
-        public User Owner { get; set; }
+        public User Owner { get; set; } = default!;
     }
 } 

@@ -39,6 +39,6 @@ namespace NginxProxyManager.SDK.Models.Redirections
         /// Owner user information
         /// </summary>
         [JsonPropertyName("owner")]
-        public User Owner { get; set; }
+        public User Owner { get; set; } = default!;
     }
 } 

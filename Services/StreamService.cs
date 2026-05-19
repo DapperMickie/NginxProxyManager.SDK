@@ -21,7 +21,7 @@ namespace NginxProxyManager.SDK.Services
         }
 
         /// <inheritdoc/>
-        public async Task<OperationResult<NginxProxyManager.SDK.Models.Streams.Stream[]>> GetStreamsAsync(string expand = null, CancellationToken cancellationToken = default)
+        public async Task<OperationResult<NginxProxyManager.SDK.Models.Streams.Stream[]>> GetStreamsAsync(string? expand = null, CancellationToken cancellationToken = default)
         {
             var path = expand != null ? $"?expand={expand}" : "";
             using var request = CreateRequest(HttpMethod.Get, path);
@@ -58,7 +58,7 @@ namespace NginxProxyManager.SDK.Services
         {
             using var request = CreateRequest(HttpMethod.Delete, streamId.ToString());
             await SendAsync<object>(request, cancellationToken);
-            return new OperationResult<object>(null);
+            return new OperationResult<object>((object?)null);
         }
 
         /// <inheritdoc/>
@@ -66,7 +66,7 @@ namespace NginxProxyManager.SDK.Services
         {
             using var request = CreateRequest(HttpMethod.Post, $"{streamId}/enable");
             await SendAsync<object>(request, cancellationToken);
-            return new OperationResult<object>(null);
+            return new OperationResult<object>((object?)null);
         }
 
         /// <inheritdoc/>
@@ -74,7 +74,7 @@ namespace NginxProxyManager.SDK.Services
         {
             using var request = CreateRequest(HttpMethod.Post, $"{streamId}/disable");
             await SendAsync<object>(request, cancellationToken);
-            return new OperationResult<object>(null);
+            return new OperationResult<object>((object?)null);
         }
     }
 } 

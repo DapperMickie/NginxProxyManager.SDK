@@ -47,7 +47,7 @@ namespace NginxProxyManager.SDK.Models.Streams
         /// </summary>
         [JsonPropertyName("forwarding_host")]
         [Required]
-        public string ForwardingHost { get; set; }
+        public string ForwardingHost { get; set; } = default!;
 
         /// <summary>
         /// Gets or sets the forwarding port
@@ -88,7 +88,7 @@ namespace NginxProxyManager.SDK.Models.Streams
         /// Gets or sets the metadata
         /// </summary>
         [JsonPropertyName("meta")]
-        public StreamMeta Meta { get; set; }
+        public StreamMeta Meta { get; set; } = default!;
     }
 
     /// <summary>
@@ -106,6 +106,6 @@ namespace NginxProxyManager.SDK.Models.Streams
         /// Gets or sets any Nginx errors
         /// </summary>
         [JsonPropertyName("nginx_err")]
-        public string NginxError { get; set; }
+        public string? NginxError { get; set; }
     }
 } 

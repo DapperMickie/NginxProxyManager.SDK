@@ -11,7 +11,7 @@ namespace NginxProxyManager.SDK.Models.Streams
         [JsonPropertyName("name")]
         [Required]
         [StringLength(255)]
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         /// <summary>
         /// Stream scheme (tcp, udp)
@@ -19,7 +19,7 @@ namespace NginxProxyManager.SDK.Models.Streams
         [JsonPropertyName("scheme")]
         [Required]
         [RegularExpression("^(tcp|udp)$")]
-        public string Scheme { get; set; }
+        public string Scheme { get; set; } = default!;
 
         /// <summary>
         /// Forward host for the stream
@@ -27,7 +27,7 @@ namespace NginxProxyManager.SDK.Models.Streams
         [JsonPropertyName("forward_host")]
         [Required]
         [RegularExpression("^(?:[^.*]+\\.?)+[^.]$")]
-        public string ForwardHost { get; set; }
+        public string ForwardHost { get; set; } = default!;
 
         /// <summary>
         /// Forward port for the stream

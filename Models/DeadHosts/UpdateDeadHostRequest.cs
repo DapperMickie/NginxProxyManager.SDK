@@ -11,7 +11,7 @@ namespace NginxProxyManager.SDK.Models.DeadHosts
         [JsonPropertyName("domain_names")]
         [MinLength(1)]
         [MaxLength(100)]
-        public string[] DomainNames { get; set; }
+        public string[] DomainNames { get; set; } = default!;
 
         /// <summary>
         /// Certificate ID
@@ -47,7 +47,7 @@ namespace NginxProxyManager.SDK.Models.DeadHosts
         /// Advanced configuration
         /// </summary>
         [JsonPropertyName("advanced_config")]
-        public string AdvancedConfig { get; set; }
+        public string AdvancedConfig { get; set; } = default!;
 
         /// <summary>
         /// Is Enabled
@@ -59,6 +59,6 @@ namespace NginxProxyManager.SDK.Models.DeadHosts
         /// Meta information
         /// </summary>
         [JsonPropertyName("meta")]
-        public object Meta { get; set; }
+        public object Meta { get; set; } = default!;
     }
 } 

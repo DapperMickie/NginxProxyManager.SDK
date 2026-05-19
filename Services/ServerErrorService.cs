@@ -49,7 +49,7 @@ namespace NginxProxyManager.SDK.Services
         {
             using var request = CreateRequest(HttpMethod.Delete, serverErrorId.ToString());
             await SendAsync<object>(request, cancellationToken);
-            return new OperationResult<object>(null);
+            return new OperationResult<object>((object?)null);
         }
 
         /// <inheritdoc/>
@@ -57,7 +57,7 @@ namespace NginxProxyManager.SDK.Services
         {
             using var request = CreateRequest(HttpMethod.Delete, $"host/{hostId}");
             await SendAsync<object>(request, cancellationToken);
-            return new OperationResult<object>(null);
+            return new OperationResult<object>((object?)null);
         }
     }
 } 

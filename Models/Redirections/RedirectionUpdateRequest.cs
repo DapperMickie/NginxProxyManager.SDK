@@ -11,13 +11,13 @@ namespace NginxProxyManager.SDK.Models.Redirections
         [JsonPropertyName("name")]
         [Required]
         [MinLength(1)]
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         /// <summary>
         /// Description of the redirection
         /// </summary>
         [JsonPropertyName("description")]
-        public string Description { get; set; }
+        public string Description { get; set; } = default!;
 
         /// <summary>
         /// Whether the redirection is enabled
@@ -30,21 +30,21 @@ namespace NginxProxyManager.SDK.Models.Redirections
         /// </summary>
         [JsonPropertyName("domain_names")]
         [Required]
-        public string[] DomainNames { get; set; }
+        public string[] DomainNames { get; set; } = default!;
 
         /// <summary>
         /// Forward scheme (http, https)
         /// </summary>
         [JsonPropertyName("forward_scheme")]
         [Required]
-        public string ForwardScheme { get; set; }
+        public string ForwardScheme { get; set; } = default!;
 
         /// <summary>
         /// Forward host
         /// </summary>
         [JsonPropertyName("forward_host")]
         [Required]
-        public string ForwardHost { get; set; }
+        public string ForwardHost { get; set; } = default!;
 
         /// <summary>
         /// Forward port
@@ -94,7 +94,7 @@ namespace NginxProxyManager.SDK.Models.Redirections
         /// Advanced configuration
         /// </summary>
         [JsonPropertyName("advanced_config")]
-        public string AdvancedConfig { get; set; }
+        public string AdvancedConfig { get; set; } = default!;
 
         /// <summary>
         /// Certificate ID

@@ -12,12 +12,12 @@ namespace NginxProxyManager.SDK.Client
         /// <summary>
         /// Gets or sets the base URL for the Nginx Proxy Manager API
         /// </summary>
-        public string BaseUrl { get; private set; }
+        public string BaseUrl { get; private set; } = default!;
 
         /// <summary>
         /// Gets or sets the authentication credentials
         /// </summary>
-        public AuthenticationCredentials Credentials { get; private set; }
+        public AuthenticationCredentials Credentials { get; private set; } = default!;
 
         /// <summary>
         /// Gets or sets the HTTP client timeout
@@ -32,12 +32,12 @@ namespace NginxProxyManager.SDK.Client
         /// <summary>
         /// Gets or sets the logger
         /// </summary>
-        public ILogger Logger { get; private set; }
+        public ILogger? Logger { get; private set; }
 
         /// <summary>
         /// Gets or sets the HTTP client
         /// </summary>
-        public HttpClient HttpClient { get; private set; }
+        public HttpClient? HttpClient { get; private set; }
 
         /// <summary>
         /// Sets the base URL for the Nginx Proxy Manager API

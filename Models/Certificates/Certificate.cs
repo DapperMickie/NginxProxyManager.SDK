@@ -18,14 +18,14 @@ namespace NginxProxyManager.SDK.Models.Certificates
         /// </summary>
         [JsonPropertyName("created_on")]
         [Required]
-        public string CreatedOn { get; set; }
+        public string CreatedOn { get; set; } = default!;
 
         /// <summary>
         /// Date and time of last update
         /// </summary>
         [JsonPropertyName("modified_on")]
         [Required]
-        public string ModifiedOn { get; set; }
+        public string ModifiedOn { get; set; } = default!;
 
         /// <summary>
         /// User ID of the owner
@@ -40,28 +40,28 @@ namespace NginxProxyManager.SDK.Models.Certificates
         [JsonPropertyName("provider")]
         [Required]
         [RegularExpression("^(letsencrypt|other)$")]
-        public string Provider { get; set; }
+        public string Provider { get; set; } = default!;
 
         /// <summary>
         /// Nice name for the certificate
         /// </summary>
         [JsonPropertyName("nice_name")]
         [Required]
-        public string NiceName { get; set; }
+        public string NiceName { get; set; } = default!;
 
         /// <summary>
         /// Domain names for the certificate
         /// </summary>
         [JsonPropertyName("domain_names")]
         [Required]
-        public string[] DomainNames { get; set; }
+        public string[] DomainNames { get; set; } = default!;
 
         /// <summary>
         /// Expiration date
         /// </summary>
         [JsonPropertyName("expires_on")]
         [Required]
-        public string ExpiresOn { get; set; }
+        public string ExpiresOn { get; set; } = default!;
 
         /// <summary>
         /// Additional metadata

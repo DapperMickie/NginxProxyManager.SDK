@@ -81,7 +81,7 @@ namespace NginxProxyManager.SDK.Services.Interfaces
         /// <param name="expand">The expansion parameter</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>The operation result containing the redirection hosts</returns>
-        Task<OperationResult<RedirectionHost[]>> GetRedirectionHostsAsync(string expand, CancellationToken cancellationToken);
+        Task<OperationResult<RedirectionHost[]>> GetRedirectionHostsAsync(string? expand, CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets a redirection host by ID

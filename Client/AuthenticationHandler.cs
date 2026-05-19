@@ -17,7 +17,7 @@ namespace NginxProxyManager.SDK.Client
     {
         private readonly IAuthService _authService;
         private readonly AuthenticationCredentials _credentials;
-        private string _cachedToken;
+        private string? _cachedToken;
         private const int MaxRetries = 1;
 
         /// <summary>

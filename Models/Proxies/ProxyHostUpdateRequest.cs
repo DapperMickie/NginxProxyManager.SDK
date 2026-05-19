@@ -13,14 +13,14 @@ namespace NginxProxyManager.SDK.Models.Proxies
         /// </summary>
         [JsonPropertyName("domain_names")]
         [Required]
-        public string[] DomainNames { get; set; }
+        public string[] DomainNames { get; set; } = default!;
 
         /// <summary>
         /// Gets or sets the forward host
         /// </summary>
         [JsonPropertyName("forward_host")]
         [Required]
-        public string ForwardHost { get; set; }
+        public string ForwardHost { get; set; } = default!;
 
         /// <summary>
         /// Gets or sets the forward port
@@ -36,7 +36,7 @@ namespace NginxProxyManager.SDK.Models.Proxies
         [JsonPropertyName("forward_scheme")]
         [Required]
         [RegularExpression("^(http|https)$")]
-        public string ForwardScheme { get; set; }
+        public string ForwardScheme { get; set; } = default!;
 
         /// <summary>
         /// Gets or sets whether SSL is forced
@@ -78,7 +78,7 @@ namespace NginxProxyManager.SDK.Models.Proxies
         /// Gets or sets the advanced configuration
         /// </summary>
         [JsonPropertyName("advanced_config")]
-        public string AdvancedConfig { get; set; }
+        public string AdvancedConfig { get; set; } = default!;
 
         /// <summary>
         /// Gets or sets the certificate ID
