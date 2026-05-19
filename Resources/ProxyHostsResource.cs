@@ -44,7 +44,9 @@ namespace NginxProxyManager.SDK.Resources
         public async Task<OperationResult<IEnumerable<ProxyHost>>> GetAllAsync()
         {
             var result = await _proxyHostService.GetAllAsync();
-            return new OperationResult<IEnumerable<ProxyHost>>(result.Result);
+            return result.IsSuccess
+                ? new OperationResult<IEnumerable<ProxyHost>>(result.Result)
+                : new OperationResult<IEnumerable<ProxyHost>>(result.Error);
         }
 
         /// <inheritdoc />
