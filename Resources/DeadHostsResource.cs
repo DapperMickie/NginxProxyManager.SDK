@@ -44,7 +44,9 @@ namespace NginxProxyManager.SDK.Resources
         public async Task<OperationResult<IEnumerable<DeadHost>>> GetAllAsync()
         {
             var result = await _deadHostService.GetAllAsync();
-            return new OperationResult<IEnumerable<DeadHost>>(result.Result);
+            return result.IsSuccess
+                ? new OperationResult<IEnumerable<DeadHost>>(result.Result)
+                : new OperationResult<IEnumerable<DeadHost>>(result.Error);
         }
 
         /// <inheritdoc />

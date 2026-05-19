@@ -43,8 +43,7 @@ namespace NginxProxyManager.SDK.Resources
         /// <inheritdoc />
         public async Task<OperationResult<IEnumerable<AccessList>>> GetAllAsync()
         {
-            var result = await _accessListService.GetAllAsync();
-            return new OperationResult<IEnumerable<AccessList>>(result.Result);
+            return await _accessListService.GetAllAsync();
         }
 
         /// <inheritdoc />
