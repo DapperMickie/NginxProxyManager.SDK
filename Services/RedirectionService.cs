@@ -98,7 +98,7 @@ namespace NginxProxyManager.SDK.Services
             try
             {
                 Debug.WriteLine($"Making GET request to: nginx/redirection-hosts");
-                var path = "nginx/redirection-hosts";
+                var path = "/api/nginx/redirection-hosts";
                 if (!string.IsNullOrEmpty(expand))
                 {
                     path += $"?expand={expand}";
@@ -121,7 +121,7 @@ namespace NginxProxyManager.SDK.Services
             try
             {
                 Debug.WriteLine($"Making GET request to: nginx/redirection-hosts/{hostId}");
-                using var request = CreateRequest(HttpMethod.Get, $"nginx/redirection-hosts/{hostId}");
+                using var request = CreateRequest(HttpMethod.Get, $"/api/nginx/redirection-hosts/{hostId}");
                 var response = await SendAsync<RedirectionHost>(request, cancellationToken);
                 return OperationResult<RedirectionHost>.Success(response);
             }
@@ -138,7 +138,7 @@ namespace NginxProxyManager.SDK.Services
             try
             {
                 Debug.WriteLine($"Making POST request to: nginx/redirection-hosts");
-                using var httpRequest = CreateRequest(HttpMethod.Post, "nginx/redirection-hosts", request);
+                using var httpRequest = CreateRequest(HttpMethod.Post, "/api/nginx/redirection-hosts", request);
                 var response = await SendAsync<RedirectionHost>(httpRequest, cancellationToken);
                 return OperationResult<RedirectionHost>.Success(response);
             }
@@ -155,7 +155,7 @@ namespace NginxProxyManager.SDK.Services
             try
             {
                 Debug.WriteLine($"Making PUT request to: nginx/redirection-hosts/{hostId}");
-                using var httpRequest = CreateRequest(HttpMethod.Put, $"nginx/redirection-hosts/{hostId}", request);
+                using var httpRequest = CreateRequest(HttpMethod.Put, $"/api/nginx/redirection-hosts/{hostId}", request);
                 var response = await SendAsync<RedirectionHost>(httpRequest, cancellationToken);
                 return OperationResult<RedirectionHost>.Success(response);
             }
@@ -172,7 +172,7 @@ namespace NginxProxyManager.SDK.Services
             try
             {
                 Debug.WriteLine($"Making DELETE request to: nginx/redirection-hosts/{hostId}");
-                using var request = CreateRequest(HttpMethod.Delete, $"nginx/redirection-hosts/{hostId}");
+                using var request = CreateRequest(HttpMethod.Delete, $"/api/nginx/redirection-hosts/{hostId}");
                 await SendAsync<object>(request, cancellationToken);
                 return OperationResult<bool>.Success(true);
             }

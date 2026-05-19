@@ -144,19 +144,19 @@ namespace NginxProxyManager.SDK.Services
 
         public async Task DeleteAuditLogAsync(int auditLogId, CancellationToken cancellationToken = default)
         {
-            using var request = CreateRequest(HttpMethod.Delete, $"api/audit-logs/{auditLogId}");
+            using var request = CreateRequest(HttpMethod.Delete, auditLogId.ToString());
             await SendAsync<object>(request, cancellationToken);
         }
 
         public async Task DeleteAuditLogsByUserIdAsync(int userId, CancellationToken cancellationToken = default)
         {
-            using var request = CreateRequest(HttpMethod.Delete, $"api/audit-logs/user/{userId}");
+            using var request = CreateRequest(HttpMethod.Delete, $"user/{userId}");
             await SendAsync<object>(request, cancellationToken);
         }
 
         public async Task DeleteAuditLogsByDateRangeAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default)
         {
-            using var request = CreateRequest(HttpMethod.Delete, $"api/audit-logs/date-range?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}");
+            using var request = CreateRequest(HttpMethod.Delete, $"date-range?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}");
             await SendAsync<object>(request, cancellationToken);
         }
     }
