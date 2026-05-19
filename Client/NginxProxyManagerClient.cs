@@ -61,6 +61,11 @@ namespace NginxProxyManager.SDK.Client
         public IStreamResource Streams { get; }
 
         /// <summary>
+        /// Gets the certificates resource
+        /// </summary>
+        public ICertificatesResource Certificates { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="NginxProxyManagerClient"/> class.
         /// </summary>
         /// <param name="baseUrl">The base URL of the Nginx Proxy Manager API</param>
@@ -79,6 +84,7 @@ namespace NginxProxyManager.SDK.Client
             var reportsService = new ReportsService(_httpClient);
             var serverErrorService = new ServerErrorService(_httpClient);
             var streamService = new StreamService(_httpClient);
+            var certificateService = new CertificateService(_httpClient, string.Empty);
 
             // Initialize resources
             ProxyHosts = new ProxyHostsResource(proxyHostService);
@@ -89,6 +95,7 @@ namespace NginxProxyManager.SDK.Client
             Reports = new ReportsResource(reportsService);
             ServerErrors = new ServerErrorResource(serverErrorService);
             Streams = new StreamResource(streamService);
+            Certificates = new CertificatesResource(certificateService);
         }
 
         /// <inheritdoc />
