@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/tests/">
+    <Project Path="tests/NginxProxyManager.SDK.Tests/NginxProxyManager.SDK.Tests.csproj" />
+  </Folder>
+  <Project Path="NginxProxyManager.SDK.csproj" />
+</Solution>
