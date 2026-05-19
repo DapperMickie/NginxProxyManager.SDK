@@ -44,7 +44,7 @@ namespace NginxProxyManager.SDK.Models.AuditLogs
         /// </summary>
         [JsonPropertyName("object_type")]
         [Required]
-        public string ObjectType { get; set; }
+        public string ObjectType { get; set; } = default!;
 
         /// <summary>
         /// ID of the object that was affected
@@ -59,19 +59,19 @@ namespace NginxProxyManager.SDK.Models.AuditLogs
         /// </summary>
         [JsonPropertyName("action")]
         [Required]
-        public string Action { get; set; }
+        public string Action { get; set; } = default!;
 
         /// <summary>
         /// Additional metadata about the audit log entry
         /// </summary>
         [JsonPropertyName("meta")]
         [Required]
-        public object Meta { get; set; }
+        public object Meta { get; set; } = default!;
 
         /// <summary>
         /// User information
         /// </summary>
         [JsonPropertyName("user")]
-        public User User { get; set; }
+        public User User { get; set; } = default!;
     }
 } 

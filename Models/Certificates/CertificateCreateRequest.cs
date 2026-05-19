@@ -11,21 +11,21 @@ namespace NginxProxyManager.SDK.Models.Certificates
         [JsonPropertyName("provider")]
         [Required]
         [RegularExpression("^(letsencrypt|other)$")]
-        public string Provider { get; set; }
+        public string Provider { get; set; } = default!;
 
         /// <summary>
         /// Nice name for the certificate
         /// </summary>
         [JsonPropertyName("nice_name")]
         [Required]
-        public string NiceName { get; set; }
+        public string NiceName { get; set; } = default!;
 
         /// <summary>
         /// Domain names for the certificate
         /// </summary>
         [JsonPropertyName("domain_names")]
         [Required]
-        public string[] DomainNames { get; set; }
+        public string[] DomainNames { get; set; } = default!;
 
         /// <summary>
         /// Additional metadata
@@ -38,18 +38,18 @@ namespace NginxProxyManager.SDK.Models.Certificates
         /// Certificate key (for custom certificates)
         /// </summary>
         [JsonPropertyName("certificate_key")]
-        public string CertificateKey { get; set; }
+        public string CertificateKey { get; set; } = default!;
 
         /// <summary>
         /// Certificate (for custom certificates)
         /// </summary>
         [JsonPropertyName("certificate")]
-        public string Certificate { get; set; }
+        public string Certificate { get; set; } = default!;
 
         /// <summary>
         /// Intermediate certificate (for custom certificates)
         /// </summary>
         [JsonPropertyName("intermediate_certificate")]
-        public string IntermediateCertificate { get; set; }
+        public string IntermediateCertificate { get; set; } = default!;
     }
 } 

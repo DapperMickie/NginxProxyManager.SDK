@@ -9,6 +9,6 @@ namespace NginxProxyManager.SDK.Models.AccessLists
         /// Owner user information
         /// </summary>
         [JsonPropertyName("owner")]
-        public User Owner { get; set; }
+        public User Owner { get; set; } = default!;
     }
 } 

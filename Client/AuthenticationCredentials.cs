@@ -15,17 +15,17 @@ namespace NginxProxyManager.SDK.Client
         /// <summary>
         /// Gets the identity (email/username)
         /// </summary>
-        public string Identity { get; }
+        public string Identity { get; } = default!;
 
         /// <summary>
         /// Gets the secret (password)
         /// </summary>
-        public string Secret { get; }
+        public string Secret { get; } = default!;
 
         /// <summary>
         /// Gets the token (for token-based authentication)
         /// </summary>
-        public string Token { get; }
+        public string Token { get; } = default!;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticationCredentials"/> class for token-based authentication

@@ -93,7 +93,7 @@ namespace NginxProxyManager.SDK.Services
         }
 
         /// <inheritdoc />
-        public async Task<OperationResult<RedirectionHost[]>> GetRedirectionHostsAsync(string expand, CancellationToken cancellationToken)
+        public async Task<OperationResult<RedirectionHost[]>> GetRedirectionHostsAsync(string? expand, CancellationToken cancellationToken)
         {
             try
             {

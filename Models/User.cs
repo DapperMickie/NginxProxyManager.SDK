@@ -12,12 +12,12 @@ namespace NginxProxyManager.SDK.Models
         /// <summary>
         /// Username
         /// </summary>
-        public string Username { get; set; }
+        public string Username { get; set; } = default!;
 
         /// <summary>
         /// Email address
         /// </summary>
-        public string Email { get; set; }
+        public string Email { get; set; } = default!;
 
         /// <summary>
         /// Whether the user is an administrator
@@ -27,11 +27,11 @@ namespace NginxProxyManager.SDK.Models
         /// <summary>
         /// Date and time of creation
         /// </summary>
-        public string CreatedOn { get; set; }
+        public string CreatedOn { get; set; } = default!;
 
         /// <summary>
         /// Date and time of last update
         /// </summary>
-        public string ModifiedOn { get; set; }
+        public string ModifiedOn { get; set; } = default!;
     }
 } 

@@ -12,7 +12,7 @@ namespace NginxProxyManager.SDK.Models.Auth
         /// Gets or sets the JWT token
         /// </summary>
         [JsonPropertyName("token")]
-        public string Token { get; set; }
+        public string Token { get; set; } = default!;
 
         /// <summary>
         /// Gets or sets the token expiration time

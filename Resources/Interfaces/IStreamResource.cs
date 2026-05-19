@@ -16,7 +16,7 @@ namespace NginxProxyManager.SDK.Resources.Interfaces
         /// <param name="expand">Optional expansion parameter</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>The operation result containing the streams</returns>
-        Task<OperationResult<NginxProxyManager.SDK.Models.Streams.Stream[]>> GetAllAsync(string expand = null, CancellationToken cancellationToken = default);
+        Task<OperationResult<NginxProxyManager.SDK.Models.Streams.Stream[]>> GetAllAsync(string? expand = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets a stream by ID

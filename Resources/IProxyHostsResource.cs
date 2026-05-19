@@ -27,7 +27,7 @@ namespace NginxProxyManager.SDK.Resources
         /// Gets all proxy hosts
         /// </summary>
         /// <returns>The operation result containing the proxy hosts</returns>
-        Task<OperationResult<IEnumerable<ProxyHost>>> GetAllAsync();
+        new Task<OperationResult<IEnumerable<ProxyHost>>> GetAllAsync();
 
         /// <summary>
         /// Gets a page of proxy hosts
@@ -35,7 +35,7 @@ namespace NginxProxyManager.SDK.Resources
         /// <param name="page">The page number</param>
         /// <param name="pageSize">The page size</param>
         /// <returns>The operation result containing the proxy hosts</returns>
-        Task<OperationResult<IEnumerable<ProxyHost>>> GetPageAsync(int page, int pageSize);
+        new Task<OperationResult<IEnumerable<ProxyHost>>> GetPageAsync(int page, int pageSize);
 
         /// <summary>
         /// Creates a new proxy host
@@ -57,7 +57,7 @@ namespace NginxProxyManager.SDK.Resources
         /// </summary>
         /// <param name="id">The proxy host ID</param>
         /// <returns>The operation result</returns>
-        Task<OperationResult<bool>> DeleteAsync(int id);
+        new Task<OperationResult<bool>> DeleteAsync(int id);
 
         /// <summary>
         /// Gets proxy hosts with SSL enabled

@@ -6,11 +6,11 @@ namespace NginxProxyManager.SDK.Models.Common
     public class Result<T>
     {
         public bool IsSuccess { get; }
-        public T Data { get; }
-        public string Error { get; }
-        public Dictionary<string, string[]> ValidationErrors { get; }
+        public T? Data { get; }
+        public string? Error { get; }
+        public Dictionary<string, string[]>? ValidationErrors { get; }
 
-        private Result(bool isSuccess, T data, string error = null, Dictionary<string, string[]> validationErrors = null)
+        private Result(bool isSuccess, T? data, string? error = null, Dictionary<string, string[]>? validationErrors = null)
         {
             IsSuccess = isSuccess;
             Data = data;

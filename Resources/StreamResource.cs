@@ -25,7 +25,7 @@ namespace NginxProxyManager.SDK.Resources
         }
 
         /// <inheritdoc/>
-        public Task<OperationResult<NginxProxyManager.SDK.Models.Streams.Stream[]>> GetAllAsync(string expand = null, CancellationToken cancellationToken = default)
+        public Task<OperationResult<NginxProxyManager.SDK.Models.Streams.Stream[]>> GetAllAsync(string? expand = null, CancellationToken cancellationToken = default)
         {
             return _streamService.GetStreamsAsync(expand, cancellationToken);
         }

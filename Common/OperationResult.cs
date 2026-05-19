@@ -16,18 +16,18 @@ namespace NginxProxyManager.SDK.Common
         /// <summary>
         /// Gets the result of the operation
         /// </summary>
-        public T Result { get; }
+        public T? Result { get; }
 
         /// <summary>
         /// Gets the error that occurred during the operation
         /// </summary>
-        public Exception Error { get; }
+        public Exception? Error { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OperationResult{T}"/> class with a successful result
         /// </summary>
         /// <param name="result">The result of the operation</param>
-        public OperationResult(T result)
+        public OperationResult(T? result)
         {
             IsSuccess = true;
             Result = result;
@@ -48,7 +48,7 @@ namespace NginxProxyManager.SDK.Common
         /// </summary>
         /// <param name="result">The result of the operation</param>
         /// <returns>A successful operation result</returns>
-        public static OperationResult<T> Success(T result)
+        public static OperationResult<T> Success(T? result)
         {
             return new OperationResult<T>(result);
         }

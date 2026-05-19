@@ -17,7 +17,7 @@ namespace NginxProxyManager.SDK.Services
     {
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _jsonOptions;
-        private string _cachedToken;
+        private string? _cachedToken;
         private DateTime _tokenExpiration;
         private static readonly TimeSpan _refreshBuffer = TimeSpan.FromMinutes(5);
 
@@ -56,7 +56,8 @@ namespace NginxProxyManager.SDK.Services
                     throw new System.Net.Http.HttpRequestException($"Authentication failed: {response.StatusCode} - {error}");
                 }
 
-                var result = await response.Content.ReadFromJsonAsync<TokenResponse>(_jsonOptions);
+                var result = await response.Content.ReadFromJsonAsync<TokenResponse>(_jsonOptions)
+                    ?? throw new JsonException("Unable to deserialize authentication response.");
                 _cachedToken = result.Token;
                 _tokenExpiration = result.Expires;
                 Debug.WriteLine($"Authentication successful, token obtained. Expires at: {_tokenExpiration}");

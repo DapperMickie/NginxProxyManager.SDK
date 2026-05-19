@@ -41,7 +41,7 @@ namespace NginxProxyManager.SDK.Models.DeadHosts
         /// </summary>
         [JsonPropertyName("domain_names")]
         [Required]
-        public string[] DomainNames { get; set; }
+        public string[] DomainNames { get; set; } = default!;
 
         /// <summary>
         /// Certificate ID
@@ -83,7 +83,7 @@ namespace NginxProxyManager.SDK.Models.DeadHosts
         /// </summary>
         [JsonPropertyName("advanced_config")]
         [Required]
-        public string AdvancedConfig { get; set; }
+        public string AdvancedConfig { get; set; } = default!;
 
         /// <summary>
         /// Is Enabled
@@ -97,18 +97,18 @@ namespace NginxProxyManager.SDK.Models.DeadHosts
         /// </summary>
         [JsonPropertyName("meta")]
         [Required]
-        public object Meta { get; set; }
+        public object Meta { get; set; } = default!;
 
         /// <summary>
         /// Owner information
         /// </summary>
         [JsonPropertyName("owner")]
-        public User Owner { get; set; }
+        public User Owner { get; set; } = default!;
 
         /// <summary>
         /// Certificate information
         /// </summary>
         [JsonPropertyName("certificate")]
-        public object Certificate { get; set; }
+        public object Certificate { get; set; } = default!;
     }
 } 

@@ -21,13 +21,14 @@ namespace NginxProxyManager.SDK.Services
 
             if (response.IsSuccessStatusCode)
             {
-                return JsonConvert.DeserializeObject<T>(content);
+                return JsonConvert.DeserializeObject<T>(content)
+                    ?? throw new JsonException($"Unable to deserialize response as {typeof(T).Name}.");
             }
 
             throw new HttpRequestException($"Error: {response.StatusCode} - {content}");
         }
 
-        protected HttpRequestMessage CreateRequest(HttpMethod method, string path, object body = null)
+        protected HttpRequestMessage CreateRequest(HttpMethod method, string path, object? body = null)
         {
             var requestUri = path?.StartsWith("/", StringComparison.Ordinal) == true
                 ? path.TrimStart('/')

@@ -124,7 +124,7 @@ namespace NginxProxyManager.SDK.Services
             response.EnsureSuccessStatusCode();
 
             var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            return JsonSerializer.Deserialize<ProxyHost>(responseContent, _jsonOptions);
+            return JsonSerializer.Deserialize<ProxyHost>(responseContent, _jsonOptions)!;
         }
 
         /// <inheritdoc />
@@ -157,7 +157,7 @@ namespace NginxProxyManager.SDK.Services
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync(cancellationToken);
-            return JsonSerializer.Deserialize<ProxyHost>(content, _jsonOptions);
+            return JsonSerializer.Deserialize<ProxyHost>(content, _jsonOptions)!;
         }
 
         /// <inheritdoc />
@@ -167,7 +167,7 @@ namespace NginxProxyManager.SDK.Services
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync(cancellationToken);
-            return JsonSerializer.Deserialize<ProxyHost[]>(content, _jsonOptions);
+            return JsonSerializer.Deserialize<ProxyHost[]>(content, _jsonOptions)!;
         }
 
         /// <inheritdoc />
@@ -177,7 +177,7 @@ namespace NginxProxyManager.SDK.Services
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync(cancellationToken);
-            return JsonSerializer.Deserialize<ProxyHost[]>(content, _jsonOptions);
+            return JsonSerializer.Deserialize<ProxyHost[]>(content, _jsonOptions)!;
         }
 
         /// <inheritdoc />
@@ -190,7 +190,7 @@ namespace NginxProxyManager.SDK.Services
             response.EnsureSuccessStatusCode();
 
             var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            return JsonSerializer.Deserialize<ProxyHost>(responseContent, _jsonOptions);
+            return JsonSerializer.Deserialize<ProxyHost>(responseContent, _jsonOptions)!;
         }
     }
 } 

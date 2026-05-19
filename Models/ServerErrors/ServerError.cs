@@ -28,7 +28,7 @@ namespace NginxProxyManager.SDK.Models.ServerErrors
         [JsonPropertyName("host_name")]
         [Required]
         [StringLength(255)]
-        public string HostName { get; set; }
+        public string HostName { get; set; } = default!;
 
         /// <summary>
         /// HTTP error code
@@ -44,7 +44,7 @@ namespace NginxProxyManager.SDK.Models.ServerErrors
         [JsonPropertyName("error_message")]
         [Required]
         [StringLength(1000)]
-        public string ErrorMessage { get; set; }
+        public string ErrorMessage { get; set; } = default!;
 
         /// <summary>
         /// URL of the request that caused the error
@@ -52,7 +52,7 @@ namespace NginxProxyManager.SDK.Models.ServerErrors
         [JsonPropertyName("request_url")]
         [Required]
         [StringLength(2048)]
-        public string RequestUrl { get; set; }
+        public string RequestUrl { get; set; } = default!;
 
         /// <summary>
         /// HTTP method of the request
@@ -60,35 +60,35 @@ namespace NginxProxyManager.SDK.Models.ServerErrors
         [JsonPropertyName("request_method")]
         [Required]
         [RegularExpression("^(GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS|TRACE|CONNECT)$")]
-        public string RequestMethod { get; set; }
+        public string RequestMethod { get; set; } = default!;
 
         /// <summary>
         /// Headers of the request
         /// </summary>
         [JsonPropertyName("request_headers")]
         [StringLength(4000)]
-        public string RequestHeaders { get; set; }
+        public string RequestHeaders { get; set; } = default!;
 
         /// <summary>
         /// Body of the request
         /// </summary>
         [JsonPropertyName("request_body")]
         [StringLength(10000)]
-        public string RequestBody { get; set; }
+        public string RequestBody { get; set; } = default!;
 
         /// <summary>
         /// Headers of the response
         /// </summary>
         [JsonPropertyName("response_headers")]
         [StringLength(4000)]
-        public string ResponseHeaders { get; set; }
+        public string ResponseHeaders { get; set; } = default!;
 
         /// <summary>
         /// Body of the response
         /// </summary>
         [JsonPropertyName("response_body")]
         [StringLength(10000)]
-        public string ResponseBody { get; set; }
+        public string ResponseBody { get; set; } = default!;
 
         /// <summary>
         /// Date and time when the error occurred
