@@ -84,7 +84,7 @@ namespace NginxProxyManager.SDK.Client
             var reportsService = new ReportsService(_httpClient);
             var serverErrorService = new ServerErrorService(_httpClient);
             var streamService = new StreamService(_httpClient);
-            var certificateService = new CertificateService(_httpClient, string.Empty);
+            var certificateService = new CertificateService(_httpClient);
 
             // Initialize resources
             ProxyHosts = new ProxyHostsResource(proxyHostService);
