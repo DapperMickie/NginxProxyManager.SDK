@@ -8,7 +8,7 @@ A .NET SDK for interacting with the Nginx Proxy Manager API.
 - Fluent builder pattern for creating requests
 - Comprehensive error handling with OperationResult pattern
 - Automatic token management and refresh
-- Broad support for Nginx Proxy Manager host, certificate, access-list, stream, audit-log, report, and server-error endpoints
+- Broad support for Nginx Proxy Manager host, certificate, access-list, stream, user, setting, audit-log, report, and server-error endpoints
 - Dependency injection support for ASP.NET Core applications
 
 ## Installation
@@ -139,6 +139,8 @@ var serverErrors = client.ServerErrors;
 var auditLogs = client.AuditLogs;
 var reports = client.Reports;
 var deadHosts = client.DeadHosts;
+var users = client.Users;
+var settings = client.Settings;
 ```
 
 ## Builder Pattern
@@ -193,6 +195,8 @@ For detailed documentation on each resource, see:
 - [Audit Logs](docs/audit-logs.md) - View audit logs
 - [Reports](docs/reports.md) - Generate reports
 - [Dead Hosts](docs/dead-hosts.md) - Manage dead hosts
+- [Users](docs/users.md) - Manage NPM users
+- [Settings](docs/settings.md) - Read and update NPM settings
 
 ## Contributing
 

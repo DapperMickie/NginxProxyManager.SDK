@@ -37,6 +37,8 @@ namespace NginxProxyManager.SDK.Extensions
             services.AddScoped<IStreamService, StreamService>();
             services.AddScoped<IAuditLogService, AuditLogService>();
             services.AddScoped<IServerErrorService, ServerErrorService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ISettingsService, SettingsService>();
 
             services.AddScoped(sp => 
                 new NginxProxyManagerClient(configuration.BaseUrl, AuthenticationCredentials.FromCredentials(configuration.Email, configuration.Password))
