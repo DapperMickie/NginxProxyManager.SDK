@@ -29,7 +29,10 @@ namespace NginxProxyManager.SDK.Services
 
         protected HttpRequestMessage CreateRequest(HttpMethod method, string path, object body = null)
         {
-            var request = new HttpRequestMessage(method, $"{_baseUrl}/{path}");
+            var requestUri = path?.StartsWith("/", StringComparison.Ordinal) == true
+                ? path.TrimStart('/')
+                : $"{_baseUrl}/{path}";
+            var request = new HttpRequestMessage(method, requestUri);
             request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
             if (body != null)
